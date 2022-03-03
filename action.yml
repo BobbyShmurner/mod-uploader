@@ -2,9 +2,13 @@ name: 'Mod Uploader'
 author: 'Bobby Shmurner'
 description: 'Used to Upload Mods to the Beat Saber Quest Mods Repository'
 inputs:
+  mod-json:
+    description: 'Path to the mod.json'
+    required: true
   qmod-url:
     description: 'URL of the QMod'
     required: true
+    default: 'mod.json'
 runs:
   using: 'node16'
   main: 'index.js'
