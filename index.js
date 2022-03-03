@@ -10,7 +10,7 @@ try {
 
 	console.log(`QMod URL: ${qmodUrl}`);
 	console.log(`mod.json Path: ${modJsonPath}`);
-	console.log(`mod.json: ${modJson}`);
+	console.log(`mod.json: ${JSON.stringify(modJson, null, 4)}`);
 } catch (error) {
 	core.setFailed(error.message);
 }
