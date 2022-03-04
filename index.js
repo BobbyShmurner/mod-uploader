@@ -3,7 +3,7 @@ const github = require('@actions/github');
 
 const fs = require('fs');
 
-try {
+async function main() {
 	const qmodUrl = core.getInput('qmod');
 	const modJsonPath = core.getInput('mod-json');
 	const modJson = JSON.parse(fs.readFileSync(modJsonPath));
@@ -19,6 +19,10 @@ try {
 		owner: "BobbyShmurner",
 		repo: "QuestModRepo"
 	});
+}
+
+try {
+	main();
 } catch (error) {
 	core.setFailed(error.message);
 }
