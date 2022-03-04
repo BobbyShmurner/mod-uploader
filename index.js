@@ -22,7 +22,7 @@ async function main() {
 	while (true) {
 		try {
 			modRepo = await octokit.rest.repos.get({
-				owner: "sc2ad",
+				owner: github.context.repo.owner,
 				repo: "TetrLang"
 			});
 
@@ -35,8 +35,8 @@ async function main() {
 			hasForked = true;
 
 			await octokit.rest.repos.createFork({
-				owner: "BobbyShmurner",
-				repo: "QuestModRepo"
+				owner: "sc2ad",
+				repo: "TetrLang"
 			});
 		}
 	}
