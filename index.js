@@ -17,7 +17,7 @@ async function main() {
 
 	var modRepo;
 	var hasForked = false;
-	var timeoutTime = new Date().getTime() + (60 * 1000);
+	var timeoutTime = (new Date()).getTime() + (60 * 1000);
 
 	while (true) {
 		try {
