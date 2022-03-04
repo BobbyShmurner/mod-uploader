@@ -20,6 +20,8 @@ async function main() {
 			owner: github.context.repo.owner,
 			repo: "QuestModRepo"
 		});
+
+		console.log(modRepo.url);
 	} catch (error) {
 		console.log("Failed to find fork, forking now...");
 
@@ -28,8 +30,6 @@ async function main() {
 			repo: "QuestModRepo"
 		});
 	}
-
-	console.log(modRepo.url);
 }
 
 try {
