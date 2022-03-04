@@ -2,6 +2,10 @@ name: 'Mod Uploader'
 author: 'Bobby Shmurner'
 description: 'Used to Upload Mods to the Beat Saber Quest Mods Repository'
 inputs:
+  token:
+    description: 'Your Github Token. You should pass "${{ secrets.GITHUB_TOKEN }}" to this input'
+    required: true
+    default: '${{ secrets.GITHUB_TOKEN }}'
   mod-json:
     description: 'Path to the mod.json'
     required: true
