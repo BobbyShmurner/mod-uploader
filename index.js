@@ -19,26 +19,13 @@ async function main() {
 	var hasForked = false;
 	var timeoutTime = (new Date()).getTime() + (60 * 1000);
 
-	while (true) {
-		try {
-			modRepo = await octokit.rest.repos.get({
-				owner: github.context.repo.owner,
-				repo: "TetrLang"
-			});
-
-			break;
-		} catch (error) {
-			if (timeoutTime < (new Date()).getTime()) throw "Times out when creating a fork of the Mod Repo. Maybe try creating the fork manually?";
-			if (hasForked) continue;
-
-			console.log("Failed to find fork, forking now...");
-			hasForked = true;
-
-			await octokit.rest.repos.createFork({
-				owner: "sc2ad",
-				repo: "TetrLang"
-			});
-		}
+	try {
+		modRepo = await octokit.rest.repos.get({
+			owner: github.context.repo.owner,
+			repo: "QuestModRepo"
+		});
+	} catch (error) {
+		console.setFailed("Failed to find fork of the Mod Repo. You can find the repo here: https://github.com/BobbyShmurner/QuestModRepo");
 	}
 
 	console.log(modRepo.url);
