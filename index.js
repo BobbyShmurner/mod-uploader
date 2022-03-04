@@ -13,12 +13,23 @@ async function main() {
 	const gitToken = core.getInput('token');
 	const octokit = github.getOctokit(gitToken);
 
-	console.log("Forking Mod Repo");
+	console.log("Getting Fork of Mod Repo");
 
-	await octokit.rest.repos.createFork({
-		owner: "BobbyShmurner",
-		repo: "QuestModRepo"
-	});
+	try {
+		const { data: modRepo } = await octokit.rest.repos.get({
+			owner: github.context.repo.owner,
+			repo: "QuestModRepo"
+		});
+	} catch (error) {
+		console.log("Failed to find fork, forking now...");
+
+		await octokit.rest.repos.createFork({
+			owner: "BobbyShmurner",
+			repo: "QuestModRepo"
+		});
+	}
+
+	console.log(modRepo.url);
 }
 
 try {
