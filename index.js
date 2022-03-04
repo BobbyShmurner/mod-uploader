@@ -28,7 +28,7 @@ async function main() {
 
 			break;
 		} catch (error) {
-			if (timeoutTime < Date().getTime()) throw "Times out when creating a fork of the Mod Repo. Maybe try creating the fork manually?";
+			if (timeoutTime < (new Date()).getTime()) throw "Times out when creating a fork of the Mod Repo. Maybe try creating the fork manually?";
 			if (hasForked) continue;
 
 			console.log("Failed to find fork, forking now...");
