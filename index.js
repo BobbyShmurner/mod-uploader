@@ -15,13 +15,13 @@ async function main() {
 
 	console.log("Getting Fork of Mod Repo");
 
+	var modRepo;
+
 	try {
-		const { data: modRepo } = await octokit.rest.repos.get({
+		modRepo = await octokit.rest.repos.get({
 			owner: github.context.repo.owner,
 			repo: "QuestModRepo"
 		});
-
-		console.log(modRepo.url);
 	} catch (error) {
 		console.log("Failed to find fork, forking now...");
 
@@ -30,6 +30,8 @@ async function main() {
 			repo: "QuestModRepo"
 		});
 	}
+
+	console.log(modRepo.url);
 }
 
 try {
