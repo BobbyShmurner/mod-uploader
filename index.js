@@ -73,7 +73,7 @@ function ConstructModEntry(modJson, modRepo) {
 
 	if (cover == '') {
 		if (!fs.existsSync('cover.png')) throw 'No core image was specifed, and "cover.png" could not be found';
-		cover == `https://github.com/${github.context.owner}/${github.context.repo}/raw/${github.context.ref}/cover.png`
+		cover = `https://github.com/${github.context.owner}/${github.context.repo}/raw/${github.context.ref}/cover.png`
 	}
 
 	if (authorIcon == '') {
