@@ -74,7 +74,9 @@ async function Main() {
 				ref: `heads/${modRepo.default_branch}`
 			})).data;
 
-			await octokit.rest.git.updateRef({
+			core.info("Got ref. Now attempting to update it");
+
+			await repoOctokit.rest.git.updateRef({
 				owner: forkedModRepo.owner.login,
 				repo: forkedModRepo.name,
 				ref: `heads/${forkedModRepo.default_branch}`,
