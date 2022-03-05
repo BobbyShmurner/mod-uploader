@@ -82,7 +82,7 @@ async function Main() {
 			commit.sha = sha;
 		}
 
-		await octokit.repos.createOrUpdateFileContents(commit);
+		await octokit.rest.repos.createOrUpdateFileContents(commit);
 
 	} catch (error) {
 		core.setFailed(error);
