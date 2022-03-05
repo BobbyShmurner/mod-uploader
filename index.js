@@ -62,6 +62,13 @@ async function Main() {
 			}
 		}
 
+		for (var i = 0; i < repoMods[modJson.packageVersion].length; i++) {
+			if (repoMods[modJson.packageVersion][i].id == modJson.id) {
+				core.info("Mod entry alread exists for this version, replacing it with this new entry");
+				repoMods[modJson.packageVersion].splice(i, 1);
+			}
+		}
+
 		repoMods[modJson.packageVersion].push(ConstructModEntry(modJson, currentUser));
 
 		await CreateBranchInRequired(modJson.id, currentUser);
