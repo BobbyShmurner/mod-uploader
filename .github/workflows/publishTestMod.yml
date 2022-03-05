@@ -15,6 +15,5 @@ jobs:
           await github.rest.actions.createWorkflowDispatch({
             'BobbyShmurner',
             'QuestModRepo',
-            'workflows/publish.yaml',
-            'master'
+            'workflows/publish.yaml'
           });
