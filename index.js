@@ -113,7 +113,7 @@ async function CreateBranchInRequired(branchName, currentUser) {
 		await octokit.rest.git.createRef({
 			owner: currentUser.login,
 			repo: "QuestModRepo",
-			ref: "refs/heads/${branchName}",
+			ref: `refs/heads/${branchName}`,
 			sha: sha
 		})
 	}
