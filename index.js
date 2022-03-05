@@ -24,12 +24,26 @@ async function main() {
 			owner: github.context.repo.owner,
 			repo: "QuestModRepo"
 		})).data;
-	} catch (error) {
+	} catch {
 		core.setFailed("Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/BigManBobby/QuestModRepo");
 	}
 
 	if (!modRepo.fork) {
 		core.setFailed(`${modRepo.html_url} is not a fork of https://github.com/BigManBobby/QuestModRepo`);
+	}
+
+	console.log("Parsing QMod");
+
+	console.log(`Game Version: ${getObjectProperty(modJson, "gtrgrt", `mod.json doesnt have property ${property}`)}`);
+
+
+}
+
+function getObjectProperty(obj, property, errorMessage) {
+	try {
+		return obj[property];
+	} catch {
+		core.setFailed(errorMessage);
 	}
 }
 
