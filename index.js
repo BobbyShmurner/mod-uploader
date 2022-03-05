@@ -93,6 +93,16 @@ async function Main() {
 
 		const commitSha = (await octokit.rest.repos.createOrUpdateFileContents(commit)).data.commit.sha;
 
+		core.info("Creating Pull Request");
+		await octokit.rest.pulls.create({
+			owner: "BigManBobby",
+			repo: "QuestModRepo",
+			title: "Test :)",
+			head: `${currentUser.login}:${modJson.id}`,
+			base: "master",
+			body: "If your seeing this, your pretty cool :sunglasses:",
+			maintainer_can_modify: true
+		})
 	} catch (error) {
 		core.setFailed(error);
 	}
