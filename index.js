@@ -77,7 +77,7 @@ async function Main() {
 			branch: modJson.id
 		};
 
-		const sha = GetSHA(sha);
+		const sha = GetSHA(currentUser);
 		if (sha != null) {
 			commit.sha = sha;
 		}
