@@ -28,10 +28,12 @@ async function main() {
 		})).data;
 	} catch {
 		core.setFailed("Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/BigManBobby/QuestModRepo");
+		return;
 	}
 
 	if (!modRepo.fork) {
 		core.setFailed(`${modRepo.html_url} is not a fork of https://github.com/BigManBobby/QuestModRepo`);
+		return;
 	}
 
 	core.info("Cloning fork");
@@ -52,6 +54,7 @@ async function main() {
 			notes.push(msg);
 		} else {
 			core.setFailed(`Version ${modJson.packageVersion} is invalid!`);
+			return;
 		}
 	}
 
