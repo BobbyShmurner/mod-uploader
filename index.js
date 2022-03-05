@@ -79,7 +79,7 @@ async function Main() {
 			branch: `refs/heads/${modJson.id}`
 		};
 
-		const sha = GetFileSHA(currentUser, modJson.id);
+		const sha = await GetFileSHA(currentUser, modJson.id);
 		if (sha != null) {
 			commit.sha = sha;
 		}
