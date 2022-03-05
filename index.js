@@ -149,8 +149,8 @@ async function Main() {
 			head: `${currentUser.login}:${modJson.id}`
 		})).data;
 
-		const prTitle = "";
-		const prMessage = "";
+		var prTitle = "";
+		var prMessage = "";
 
 		if (isNewEntry) {
 			prTitle = `Added ${modJson.name} v${modJson.version} to the mod repo`;
