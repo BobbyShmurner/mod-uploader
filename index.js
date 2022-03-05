@@ -205,7 +205,7 @@ function FetchUpstream(repo, upstreamRepo, branch, upstreamBranch) {
 	const compareResults = (await octokit.rest.repos.compareCommits({
 		owner: upstreamRepo.owner.login,
 		repo: upstreamRepo.name,
-		base: upstreamRepo.upstreamBranch,
+		base: upstreamBranch,
 		head: `${repo.owner.login}:${branch}`
 	})).data;
 
