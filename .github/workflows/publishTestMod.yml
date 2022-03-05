@@ -1,0 +1,20 @@
+name: Publish Test QMod
+
+on:
+  push:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:    
+    - name: Dispatch Publish Workflow
+      uses: actions/github-script@v5
+      with:
+        script: |
+          await github.rest.actions.createWorkflowDispatch({
+            'BobbyShmurner',
+            'QuestModRepo',
+            'workflows/publish.yaml',
+            'master',
+          });
