@@ -11,6 +11,10 @@ const shell = require('shelljs');
 const semver = require('semver');
 const base64 = require('js-base64');
 
+var modRepo;
+var forkedModRepo;
+var currentUser;
+
 async function Main() {
 	try {
 		const modJsonPath = core.getInput('mod-json');
@@ -22,33 +26,68 @@ async function Main() {
 		const modJson = JSON.parse(fs.readFileSync(modJsonPath));
 		var notes = [];
 
-		core.info("Getting Fork of Mod Repo");
-
-		var modRepo;
-		var currentUser;
+		core.info("Getting Mod Repo");
 
 		try {
 			modRepo = (await octokit.rest.repos.get({
-				owner: github.context.repo.owner,
+				owner: "BigManBobby",
 				repo: "QuestModRepo"
+			})).data;
+		} catch {
+			throw "Failed to retrive the mod repo. Please contact Bobby Shmurner on discord";
+		}
+
+		core.info("Getting Fork of Mod Repo");
+
+		try {
+			forkedModRepo = (await octokit.rest.repos.get({
+				owner: github.context.repo.owner,
+				repo: modRepo.name
 			})).data;
 
 			currentUser = (await octokit.rest.users.getByUsername({
-				username: modRepo.owner.login
+				username: forkedModRepo.owner.login
 			})).data;
 		} catch {
-			throw "Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/BigManBobby/QuestModRepo";
+			throw `Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/${modRepo.owner.login}/${modRepo.name}`;
 		}
 
-		if (!modRepo.fork) {
-			throw `${modRepo.html_url} is not a fork of https://github.com/BigManBobby/QuestModRepo`;
+		if (!forkedModRepo.fork) {
+			throw `${forkedModRepo.html_url} is not a fork of https://github.com/${modRepo.owner.login}/${modRepo.name}`;
+		}
+
+		core.info("Checking if fork is behind");
+		const compareResults = (await octokit.rest.repos.compareCommits({
+			owner: modRepo.owner.login,
+			repo: modRepo.name,
+			base: modRepo.default_branch,
+			head: `${forkedModRepo.owner.login}:${forkedModRepo.default_branch}`
+		})).data;
+
+		if (compareResults.behind_by > 0) {
+			core.info(`Fork is behind by ${compareResults.behind_by} commits. Fetching Upstream...`);
+
+			const upstreamBranchReference = (await octokit.rest.git.getRef({
+				owner: modRepo.owner.login,
+				repo: modRepo.name,
+				ref: `heads/${modRepo.default_branch}`
+			})).data;
+
+			await octokit.rest.git.updateRef({
+				owner: forkedModRepo.owner.login,
+				repo: forkedModRepo.name,
+				ref: `heads/${forkedModRepo.default_branch}`,
+				sha: upstreamBranchReference.object.sha
+			})
+		} else {
+			core.info("Fork is up-to-date");
 		}
 
 		core.info("Cloning fork");
-		shell.exec(`git clone ${modRepo.html_url}`);
+		shell.exec(`git clone ${forkedModRepo.html_url}`);
 
 		core.info("Getting the repo's mods");
-		const repoMods = JSON.parse(fs.readFileSync("QuestModRepo/mods.json"));
+		const repoMods = JSON.parse(fs.readFileSync(`${forkedModRepo.name}/mods.json`));
 
 		core.info("Adding mod entry to mod repo");
 
@@ -72,9 +111,9 @@ async function Main() {
 			}
 		}
 
-		repoMods[modJson.packageVersion].push(ConstructModEntry(modJson, currentUser));
+		repoMods[modJson.packageVersion].push(ConstructModEntry(modJson));
 
-		await CreateBranchInRequired(modJson.id, currentUser);
+		await CreateBranchInRequired(modJson.id);
 
 		core.info("Encoding modified Mods json");
 		const encodedRepoMods = base64.encode(JSON.stringify(repoMods, null, 4));
@@ -82,14 +121,14 @@ async function Main() {
 		core.info("Commiting moddfied Mods json");
 		var commit = {
 			owner: currentUser.login,
-			repo: "QuestModRepo",
+			repo: forkedModRepo.name,
 			path: "mods.json",
 			message: `Added ${modJson.name} v${modJson.version} to the Mod Repo`,
 			content: encodedRepoMods,
 			branch: `refs/heads/${modJson.id}`
 		};
 
-		const sha = await GetFileSHA(currentUser, modJson.id);
+		const sha = await GetFileSHA(modJson.id);
 		if (sha != null) {
 			commit.sha = sha;
 		}
@@ -98,11 +137,11 @@ async function Main() {
 
 		core.info("Creating Pull Request");
 		await repoOctokit.rest.pulls.create({
-			owner: "BigManBobby",
-			repo: "QuestModRepo",
+			owner: modRepo.owner.login,
+			repo: modRepo.name,
 			title: "Test :)",
 			head: `${currentUser.login}:${modJson.id}`,
-			base: "master",
+			base: modRepo.default_branch,
 			body: "If your seeing this, your pretty cool :sunglasses:",
 			maintainer_can_modify: true
 		})
@@ -111,12 +150,12 @@ async function Main() {
 	}
 }
 
-async function CreateBranchInRequired(branchName, currentUser) {
+async function CreateBranchInRequired(branchName) {
 	core.info(`Checking if "${branchName}" branch exists`);
 	try {
 		await octokit.rest.git.getRef({
 			owner: currentUser.login,
-			repo: "QuestModRepo",
+			repo: forkedModRepo.name,
 			ref: `heads/${branchName}`
 		});
 
@@ -126,20 +165,20 @@ async function CreateBranchInRequired(branchName, currentUser) {
 
 		const sha = (await octokit.rest.git.getRef({
 			owner: currentUser.login,
-			repo: "QuestModRepo",
-			ref: "heads/master"
+			repo: forkedModRepo.name,
+			ref: forkedModRepo.default_branch
 		})).data.object.sha;
 
 		await octokit.rest.git.createRef({
 			owner: currentUser.login,
-			repo: "QuestModRepo",
+			repo: forkedModRepo.name,
 			ref: `refs/heads/${branchName}`,
 			sha: sha
 		})
 	}
 }
 
-function ConstructModEntry(modJson, currentUser) {
+function ConstructModEntry(modJson) {
 	var cover = core.getInput('cover');
 	var authorIcon = core.getInput('author-icon');
 
@@ -168,11 +207,11 @@ function ConstructModEntry(modJson, currentUser) {
 	return modEntry;
 }
 
-async function GetFileSHA(currentUser, branchName) {
+async function GetFileSHA(branchName) {
 	try {
 		const result = await octokit.rest.repos.getContent({
 			owner: currentUser.login,
-			repo: "QuestModRepo",
+			repo: forkedModRepo.name,
 			path: "mods.json",
 			ref: `refs/heads/${branchName}`
 		});
