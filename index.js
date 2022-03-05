@@ -93,7 +93,7 @@ function ConstructModEntry(modJson, modRepo) {
 }
 
 try {
-	main();
+	await main();
 } catch (error) {
 	core.setFailed(error.message);
 }
