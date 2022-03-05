@@ -28,7 +28,7 @@ async function main() {
 		console.setFailed("Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/BobbyShmurner/QuestModRepo");
 	}
 
-	console.log(JSON.stringify(modRepo));
+	console.log(JSON.stringify(modRepo, null, 4));
 }
 
 try {
