@@ -3,9 +3,10 @@ const github = require('@actions/github');
 const gitToken = core.getInput('token');
 const octokit = github.getOctokit(gitToken);
 
-const fs = require('fs');
-const shell = require('shelljs')
-const semver = require('semver')
+const fs = require('fs');;
+const shell = require('shelljs');
+const semver = require('semver');
+const base64 = require('js-base64');
 
 async function Main() {
 	try {
@@ -43,11 +44,6 @@ async function Main() {
 		core.info("Cloning fork");
 		shell.exec(`git clone ${modRepo.html_url}`);
 
-		core.info(`Checking out "${modJson.id}"`);
-		shell.cd("QuestModRepo");
-		shell.exec(`git checkout ${modJson.id} 2>/dev/null || git checkout -b ${modJson.id}`);
-		shell.cd("..");
-
 		core.info("Getting the repo's mods");
 		const repoMods = JSON.parse(fs.readFileSync("QuestModRepo/mods.json"));
 
@@ -67,26 +63,27 @@ async function Main() {
 		}
 
 		repoMods[modJson.packageVersion].push(ConstructModEntry(modJson, currentUser));
-		core.info(JSON.stringify(repoMods, null, 4));
 
-		core.info("Saving modified mods json");
-		fs.writeFileSync('QuestModRepo/mods.json', JSON.stringify(repoMods, null, 4));
+		core.info("Encoding modified Mods json");
+		const encodedRepoMods = base64.encode(JSON.stringify(repoMods, null, 4));
 
-		shell.cd('QuestModRepo');
+		core.info("Commiting moddfied Mods json");
+		var commit = {
+			owner: currentUser.login,
+			repo: "QuestModRepo",
+			path: "mods.json",
+			message: `Added ${modJson.name} v${modJson.version} to the Mod Repo`,
+			content: encodedRepoMods,
+			branch: modJson.id
+		};
 
-		core.info("Setting git identity");
-		core.info(`Email: "${currentUser.email}", Username: "${currentUser.login}"`);
-		// shell.exec(`git config --global user.email "${currentUser.email}"`);
-		shell.exec(`git config --global user.name "${currentUser.login}"`);
+		const sha = GetSHA(sha);
+		if (sha != null) {
+			commit.sha = sha;
+		}
 
-		core.info("Commiting modified mods json");
-		shell.exec(`git add mods.json`);
-		shell.exec(`git commit -m "Added ${modJson.name} v${modJson.version} to the mod repo"`);
+		await octokit.repos.createOrUpdateFileContents(commit);
 
-		core.info("Pushing commit to fork");
-		shell.exec(`git push --set-upstream origin "${modJson.id}"`);
-
-		shell.cd('..');
 	} catch (error) {
 		core.setFailed(error);
 	}
@@ -119,6 +116,22 @@ function ConstructModEntry(modJson, currentUser) {
 	}
 
 	return modEntry;
+}
+
+async function GetSHA(currentUser) {
+	try {
+		const result = await octokit.repos.getContent({
+			owner: currentUser.login,
+			repo: "QuestModRepo",
+			path: "mods.json",
+		})
+
+		core.info(result);
+
+		return result.data.sha;
+	} catch {
+		return null;
+	}
 }
 
 Main();
