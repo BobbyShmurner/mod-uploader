@@ -12,6 +12,11 @@ inputs:
     description: 'URL of the QMod'
     required: true
     default: 'mod.json'
+  cover:
+    description: "URL to the author's icon. By default the URL to 'cover.png' will be used"
+  author-icon:
+    description: "URL to the author's icon. By default the repo's owner's pfp will be used"
+  
 runs:
   using: 'node16'
   main: 'index.js'

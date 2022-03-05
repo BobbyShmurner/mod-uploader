@@ -60,12 +60,20 @@ async function main() {
 }
 
 function ConstructModEntry(modJson) {
+	var cover = core.getInput('cover');
+	var authorIcon = core.getInput('author-icon');
+
 	const modEntry = {
 		name: modJson.name,
+		description: modJson.description,
 		id: modJson.id,
 		version: modJson.version,
-		description: modJson.description,
-		downloadLink: core.getInput('qmod-url')
+		downloadLink: core.getInput('qmod-url'),
+		cover: cover,
+		author: {
+			name: modJson.author,
+			icon: authorIcon
+		}
 	}
 
 	return modEntry;
