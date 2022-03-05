@@ -48,7 +48,7 @@ async function main() {
 
 			const msg = `There were no mods found for the version ${modJson.packageVersion}, so a new verion entry was created`;
 
-			core.warn(msg);
+			core.warning(msg);
 			notes.push(msg);
 		} else {
 			core.setFailed(`Version ${modJson.packageVersion} is invalid!`);
