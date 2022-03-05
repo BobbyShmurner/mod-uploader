@@ -171,13 +171,7 @@ async function Main() {
 		if (prs.length > 0) {
 			core.info("PR alread exists. Will just be adding a message to the existing PR");
 
-			const pr = (await octokit.rest.pulls.get({
-				owner: modRepo.owner.login,
-				repo: modRepo.name,
-				pull_number: prs[0].number
-			})).data;
-
-			await octokit.rest.issues.createComment({
+			await repoOctokit.rest.issues.createComment({
 				owner: modRepo.owner.login,
 				repo: modRepo.name,
 				issue_number: prs[0].number,
