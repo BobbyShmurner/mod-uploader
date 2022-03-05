@@ -76,7 +76,7 @@ async function Main() {
 
 		core.info("Setting git identity");
 		core.info(`Email: "${currentUser.email}", Username: "${currentUser.login}"`);
-		shell.exec(`git config --global user.email "${currentUser.email}"`);
+		// shell.exec(`git config --global user.email "${currentUser.email}"`);
 		shell.exec(`git config --global user.name "${currentUser.login}"`);
 
 		core.info("Commiting modified mods json");
