@@ -74,14 +74,16 @@ async function Main() {
 				ref: `heads/${modRepo.default_branch}`
 			})).data;
 
-			core.info("Got ref. Now attempting to update it");
-
-			await repoOctokit.rest.git.updateRef({
-				owner: forkedModRepo.owner.login,
-				repo: forkedModRepo.name,
-				ref: `heads/${forkedModRepo.default_branch}`,
-				sha: upstreamBranchReference.object.sha
-			})
+			try {
+				await repoOctokit.rest.git.updateRef({
+					owner: forkedModRepo.owner.login,
+					repo: forkedModRepo.name,
+					ref: `heads/${forkedModRepo.default_branch}`,
+					sha: upstreamBranchReference.object.sha
+				})
+			} catch {
+				throw "Failed to fetch upstream. This can be fixed by performing a manual merge";
+			}
 		} else {
 			core.info("Fork is up-to-date");
 		}
