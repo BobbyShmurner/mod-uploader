@@ -150,7 +150,7 @@ function ConstructModEntry(modJson, currentUser) {
 
 async function GetCommitSHA(currentUser) {
 	try {
-		const result = await octokit.repos.getContent({
+		const result = await octokit.rest.repos.getContent({
 			owner: currentUser.login,
 			repo: "QuestModRepo",
 			path: "mods.json",
