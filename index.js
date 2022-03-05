@@ -77,6 +77,7 @@ async function Main() {
 		shell.exec(`git config --global user.name  "${currentUser.name}"`);
 
 		core.info("Commiting modified mods json");
+		shell.exec(`git add mods.json`);
 		shell.exec(`git commit -m "Added ${modJson.name} v${modJson.version} to the mod repo"`);
 
 		core.info("Pushing commit to fork");
