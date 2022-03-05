@@ -25,11 +25,11 @@ async function main() {
 			repo: "QuestModRepo"
 		})).data;
 	} catch (error) {
-		throw "Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/BigManBobby/QuestModRepo";
+		core.setFailed("Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/BigManBobby/QuestModRepo");
 	}
 
 	if (!modRepo.fork) {
-		core.setFailed(`${modRepo.url} is not a fork of https://github.com/BigManBobby/QuestModRepo`);
+		core.setFailed(`${modRepo.html_url} is not a fork of https://github.com/BigManBobby/QuestModRepo`);
 	}
 }
 
