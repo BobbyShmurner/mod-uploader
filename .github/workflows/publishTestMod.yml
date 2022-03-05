@@ -16,5 +16,5 @@ jobs:
             'BobbyShmurner',
             'QuestModRepo',
             'workflows/publish.yaml',
-            'master',
+            'master'
           });
