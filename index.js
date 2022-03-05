@@ -25,10 +25,10 @@ async function main() {
 			repo: "QuestModRepo"
 		});
 	} catch (error) {
-		console.setFailed("Failed to find fork of the Mod Repo. You can find the repo here: https://github.com/BobbyShmurner/QuestModRepo");
+		console.setFailed("Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/BobbyShmurner/QuestModRepo");
 	}
 
-	console.log(modRepo.url);
+	console.log(JSON.stringify(modRepo));
 }
 
 try {
