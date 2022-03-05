@@ -43,6 +43,9 @@ async function Main() {
 
 		core.info("Cloning fork");
 		shell.exec(`git clone ${modRepo.html_url}`);
+		shell.cd("QuestModRepo");
+		shell.exec(`git checkout ${modJson.id} 2>/dev/null`);
+		shell.cd("..");
 
 		core.info("Getting the repo's mods");
 		const repoMods = JSON.parse(fs.readFileSync("QuestModRepo/mods.json"));
