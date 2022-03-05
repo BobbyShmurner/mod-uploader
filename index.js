@@ -10,12 +10,12 @@ async function main() {
 	const modJson = JSON.parse(fs.readFileSync(modJsonPath));
 	var notes = [];
 
-	core.log("Getting Octokit");
+	core.info("Getting Octokit");
 
 	const gitToken = core.getInput('token');
 	const octokit = github.getOctokit(gitToken);
 
-	core.log("Getting Fork of Mod Repo");
+	core.info("Getting Fork of Mod Repo");
 
 	var modRepo;
 	var hasForked = false;
@@ -34,13 +34,13 @@ async function main() {
 		core.setFailed(`${modRepo.html_url} is not a fork of https://github.com/BigManBobby/QuestModRepo`);
 	}
 
-	core.log("Cloning fork");
+	core.info("Cloning fork");
 	shell.exec(`git clone ${modRepo.html_url}`);
 
-	core.log("Getting the repo's mods");
+	core.info("Getting the repo's mods");
 	const repoMods = JSON.parse(fs.readFileSync("QuestModRepo/mods.json"));
 
-	core.log("Adding mod entry to mod repo");
+	core.info("Adding mod entry to mod repo");
 
 	if (!repoMods.hasOwnProperty(modJson.packageVersion)) {
 		if (semver.valid(modJson.packageVersion)) {
@@ -56,7 +56,7 @@ async function main() {
 	}
 
 	repoMods[modJson.packageVersion].push(ConstructModEntry(modJson));
-	core.log(JSON.stringify(repoMods, null, 4));
+	core.info(JSON.stringify(repoMods, null, 4));
 }
 
 function ConstructModEntry(modJson) {
