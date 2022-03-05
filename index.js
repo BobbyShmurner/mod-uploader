@@ -1,5 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const gitToken = core.getInput('token');
+const octokit = github.getOctokit(gitToken);
 
 const fs = require('fs');
 const shell = require('shelljs')
@@ -7,13 +9,15 @@ const semver = require('semver')
 
 async function main() {
 	const modJsonPath = core.getInput('mod-json');
+
+	if (!fs.existsSync(modJsonPath)) {
+		throw `File "${modJsonPath}" does not exist`;
+	}
+
 	const modJson = JSON.parse(fs.readFileSync(modJsonPath));
 	var notes = [];
 
 	core.info("Getting Octokit");
-
-	const gitToken = core.getInput('token');
-	const octokit = github.getOctokit(gitToken);
 
 	core.info("Getting Fork of Mod Repo");
 
@@ -27,13 +31,11 @@ async function main() {
 			repo: "QuestModRepo"
 		})).data;
 	} catch {
-		core.setFailed("Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/BigManBobby/QuestModRepo");
-		return;
+		throw "Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/BigManBobby/QuestModRepo";
 	}
 
 	if (!modRepo.fork) {
-		core.setFailed(`${modRepo.html_url} is not a fork of https://github.com/BigManBobby/QuestModRepo`);
-		return;
+		throw `${modRepo.html_url} is not a fork of https://github.com/BigManBobby/QuestModRepo`;
 	}
 
 	core.info("Cloning fork");
@@ -53,18 +55,26 @@ async function main() {
 			core.warning(msg);
 			notes.push(msg);
 		} else {
-			core.setFailed(`Version ${modJson.packageVersion} is invalid!`);
-			return;
+			throw `Version ${modJson.packageVersion} is invalid!`;
 		}
 	}
 
-	repoMods[modJson.packageVersion].push(ConstructModEntry(modJson));
+	repoMods[modJson.packageVersion].push(ConstructModEntry(modJson, modRepo));
 	core.info(JSON.stringify(repoMods, null, 4));
 }
 
-function ConstructModEntry(modJson) {
+function ConstructModEntry(modJson, modRepo) {
 	var cover = core.getInput('cover');
 	var authorIcon = core.getInput('author-icon');
+
+	if (cover == '') {
+		if (!fs.existsSync('cover.png')) throw 'No core image was specifed, and "cover.png" could not be found';
+		cover == `https://github.com/${github.context.owner}/${github.context.repo}/raw/${github.context.ref}/cover.png`
+	}
+
+	if (authorIcon == '') {
+		authorIcon = modRepo.owner.avatar_url;
+	}
 
 	const modEntry = {
 		name: modJson.name,
