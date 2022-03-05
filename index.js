@@ -1,10 +1,10 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const gitToken = core.getInput('token');
-const repotToken = core.getInput('repo-token');
+const repoToken = core.getInput('repo-token');
 
 const octokit = github.getOctokit(gitToken);
-const repoOctokit = github.getOctokit(repotToken);
+const repoOctokit = github.getOctokit(repoToken);
 
 const fs = require('fs');;
 const shell = require('shelljs');
