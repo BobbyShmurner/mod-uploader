@@ -187,8 +187,6 @@ async function CreateBranchIfRequired(branchName) {
 			ref: `heads/${forkedModRepo.default_branch}`
 		})).data.object.sha;
 
-		core.info(`Got SHA: ${sha}`);
-
 		await octokit.rest.git.createRef({
 			owner: forkedModRepo.owner.login,
 			repo: forkedModRepo.name,
@@ -274,8 +272,6 @@ async function GetFileSHA(branchName) {
 			path: "mods.json",
 			ref: `refs/heads/${branchName}`
 		});
-
-		core.info(`Sha: "${result.data.sha}"`);
 
 		return result.data.sha;
 	} catch (error) {
