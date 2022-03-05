@@ -15,6 +15,8 @@ var modRepo;
 var forkedModRepo;
 var currentUser;
 
+var notes = [];
+
 async function Main() {
 	try {
 		const modJsonPath = core.getInput('mod-json');
@@ -24,7 +26,6 @@ async function Main() {
 		}
 
 		const modJson = JSON.parse(fs.readFileSync(modJsonPath));
-		var notes = [];
 
 		core.info("Getting Mod Repo");
 
@@ -104,10 +105,15 @@ async function Main() {
 			}
 		}
 
+		const isNewEntry = true;
+
 		for (var i = 0; i < repoMods[modJson.packageVersion].length; i++) {
 			if (repoMods[modJson.packageVersion][i].id == modJson.id) {
 				core.info("Mod entry alread exists for this version, replacing it with this new entry");
 				repoMods[modJson.packageVersion].splice(i, 1);
+
+				isNewEntry = false;
+				break;
 			}
 		}
 
@@ -133,18 +139,62 @@ async function Main() {
 			commit.sha = sha;
 		}
 
-		const commitSha = (await octokit.rest.repos.createOrUpdateFileContents(commit)).data.commit.sha;
+		await octokit.rest.repos.createOrUpdateFileContents(commit);
 
-		core.info("Creating Pull Request");
-		await repoOctokit.rest.pulls.create({
+		core.info("Checking if Pull Request Exists for branch");
+		const prs = (await octokit.rest.pulls.list({
 			owner: modRepo.owner.login,
 			repo: modRepo.name,
-			title: "Test :)",
-			head: `${currentUser.login}:${modJson.id}`,
-			base: modRepo.default_branch,
-			body: "If your seeing this, your pretty cool :sunglasses:",
-			maintainer_can_modify: true
-		})
+			state: "open",
+			head: `${currentUser.login}:${modJson.id}`
+		})).data;
+
+		const prTitle = "";
+		const prMessage = "";
+
+		if (isNewEntry) {
+			prTitle = `Added ${modJson.name} v${modJson.version} to the mod repo`;
+			prMessage = `Added ${modJson.name} v${modJson.version} to the mod repo for Beat Saber version ${modJson.packageVersion}.\n\nYou can check out the build action [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/runs/${github.context.runId})`;
+		} else {
+			prTitle = `Updated ${modJson.name} to v${modJson.version}`;
+			prMessage = `Updated ${modJson.name} to v${modJson.version} for Beat Saber version ${modJson.packageVersion}.\n\nYou can check out the build action [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/runs/${github.context.runId})`;
+		}
+
+		if (notes.length > 0) {
+			prMessage += "\n\n**Notes:**";
+
+			for (const note of notes) {
+				prMessage += `\n- ${note}`;
+			}
+		}
+
+		if (prs.length > 0) {
+			core.info("PR alread exists. Will just be adding a message to the existing PR");
+
+			const pr = (await octokit.rest.pulls.get({
+				owner: modRepo.owner.login,
+				repo: modRepo.name,
+				pull_number: prs[0].number
+			})).data;
+
+			await octokit.rest.issues.createComment({
+				owner: modRepo.owner.login,
+				repo: modRepo.name,
+				issue_number: prs[0].number,
+				body: prMessage
+			})
+		} else {
+			core.info("No PR found, creating one now");
+			await repoOctokit.rest.pulls.create({
+				owner: modRepo.owner.login,
+				repo: modRepo.name,
+				title: prTitle,
+				head: `${currentUser.login}:${modJson.id}`,
+				base: modRepo.default_branch,
+				body: prMessage,
+				maintainer_can_modify: true
+			})
+		}
 	} catch (error) {
 		core.setFailed(error);
 	}
