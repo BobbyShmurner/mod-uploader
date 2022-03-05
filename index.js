@@ -187,6 +187,8 @@ async function CreateBranchInRequired(branchName) {
 			ref: forkedModRepo.default_branch
 		})).data.object.sha;
 
+		core.info(`Got SHA: ${sha}`);
+
 		await octokit.rest.git.createRef({
 			owner: forkedModRepo.owner.login,
 			repo: forkedModRepo.name,
