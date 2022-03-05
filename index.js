@@ -10,6 +10,8 @@ const semver = require('semver')
 async function main() {
 	const modJsonPath = core.getInput('mod-json');
 
+	throw "test :)";
+
 	if (!fs.existsSync(modJsonPath)) {
 		throw `File "${modJsonPath}" does not exist`;
 	}
@@ -93,7 +95,7 @@ function ConstructModEntry(modJson, modRepo) {
 }
 
 try {
-	await main();
+	main();
 } catch (error) {
 	core.setFailed(error.message);
 }
