@@ -7,11 +7,9 @@ const fs = require('fs');
 const shell = require('shelljs')
 const semver = require('semver')
 
-async function main() {
+async function Main() {
 	try {
 		const modJsonPath = core.getInput('mod-json');
-
-		throw "test :)";
 
 		if (!fs.existsSync(modJsonPath)) {
 			throw `File "${modJsonPath}" does not exist`;
@@ -98,4 +96,4 @@ function ConstructModEntry(modJson, modRepo) {
 	return modEntry;
 }
 
-main();
+Main();
