@@ -58,7 +58,7 @@ async function Main() {
 		}
 
 		await FetchUpstream(forkedModRepo, modRepo, forkedModRepo.default_branch, modRepo.default_branch);
-		await CreateBranchInRequired(modJson.id);
+		await CreateBranchIfRequired(modJson.id);
 
 		core.info("Cloning fork");
 		shell.exec(`git clone ${forkedModRepo.html_url}`);
@@ -168,7 +168,7 @@ async function Main() {
 	}
 }
 
-async function CreateBranchInRequired(branchName) {
+async function CreateBranchIfRequired(branchName) {
 	core.info(`Checking if "${branchName}" branch exists`);
 	try {
 		await octokit.rest.git.getRef({
@@ -180,6 +180,8 @@ async function CreateBranchInRequired(branchName) {
 		core.info("Branch already exists");
 	} catch {
 		core.info("Branch does not exists, creating it now");
+
+		core.info(`Default Branch: ${forkedModRepo.default_branch}`);
 
 		const sha = (await octokit.rest.git.getRef({
 			owner: forkedModRepo.owner.login,
