@@ -20,15 +20,17 @@ async function main() {
 	var timeoutTime = (new Date()).getTime() + (60 * 1000);
 
 	try {
-		data: modRepo = await octokit.rest.repos.get({
+		modRepo = (await octokit.rest.repos.get({
 			owner: github.context.repo.owner,
 			repo: "QuestModRepo"
-		});
+		})).data;
 	} catch (error) {
 		throw "Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/BobbyShmurner/QuestModRepo";
 	}
 
-	console.log(JSON.stringify(modRepo, null, 4));
+	if (!modRepo.fork) {
+		throw `${modRepo.url} is not a fork of https://github.com/BobbyShmurner/QuestModRepo`;
+	}
 }
 
 try {
