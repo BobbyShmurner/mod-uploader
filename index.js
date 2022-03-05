@@ -156,10 +156,11 @@ async function GetCommitSHA(currentUser) {
 			path: "mods.json",
 		})
 
-		core.info(`Sha: "${result}"`);
+		core.info(`Sha: "${result.data.sha}"`);
 
 		return result.data.sha;
-	} catch {
+	} catch (error) {
+		core.info(`Failed to get File SHA: ${error.message}`);
 		return null;
 	}
 }
