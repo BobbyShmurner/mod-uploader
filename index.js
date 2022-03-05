@@ -253,7 +253,7 @@ function ConstructModEntry(modJson) {
 		description: modJson.description,
 		id: modJson.id,
 		version: modJson.version,
-		downloadLink: core.getInput('qmod-url'),
+		downloadLink: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/download/${core.getInput('tag')}/${core.getInput('qmod-name')}`,
 		cover: cover,
 		author: {
 			name: modJson.author,
@@ -270,7 +270,7 @@ async function GetFileSHA(branchName) {
 			owner: forkedModRepo.owner.login,
 			repo: forkedModRepo.name,
 			path: "mods.json",
-			ref: `refs/heads/${branchName}`
+			ref: `refs/ heads / ${branchName}`
 		});
 
 		return result.data.sha;

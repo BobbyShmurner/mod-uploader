@@ -10,11 +10,14 @@ inputs:
     required: true
   mod-json:
     description: 'Path to the mod.json'
-    required: true
-  qmod-url:
-    description: 'URL of the QMod'
-    required: true
     default: 'mod.json'
+    required: true
+  qmod-name:
+    description: 'Name of QMod Asset. NOTE: This is the name of the uploaded file, not the file on disk'
+    required: true
+  tag:
+    description: 'The tag of the release'
+    required: true
   cover:
     description: "URL to the author's icon. By default the URL to 'cover.png' will be used"
   author-icon:
