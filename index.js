@@ -34,17 +34,9 @@ async function main() {
 
 	console.log("Parsing QMod");
 
-	console.log(`Game Version: ${getObjectProperty(modJson, "gtrgrt", `mod.json doesnt have property ${property}`)}`);
+	console.log(`Game Version: ${modJson.ghigiurthgiurthgiurthuigrtuighirughiurthguirtgierkfpowekportjgoijweojrtiogjrewpgjreofkperjgpowekgitjgopwerjouerogjketo}`);
 
 
-}
-
-function getObjectProperty(obj, property, errorMessage) {
-	try {
-		return obj[property];
-	} catch {
-		core.setFailed(errorMessage);
-	}
 }
 
 try {
