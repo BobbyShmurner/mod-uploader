@@ -29,7 +29,9 @@ async function Main() {
 				repo: "QuestModRepo"
 			})).data;
 
-			currentUser = modRepo.owner;
+			currentUser = (await octokit.rest.users.getByUsername({
+				username: modRepo.owner.login
+			})).data;
 		} catch {
 			throw "Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/BigManBobby/QuestModRepo";
 		}
@@ -73,9 +75,9 @@ async function Main() {
 		shell.cd('QuestModRepo');
 
 		core.info("Setting git identity");
-		core.info(`Email: "${currentUser.email}", Username: "${currentUser.name}"`);
+		core.info(`Email: "${currentUser.email}", Username: "${currentUser.login}"`);
 		shell.exec(`git config --global user.email "${currentUser.email}"`);
-		shell.exec(`git config --global user.name "${currentUser.name}"`);
+		shell.exec(`git config --global user.name "${currentUser.login}"`);
 
 		core.info("Commiting modified mods json");
 		shell.exec(`git add mods.json`);
