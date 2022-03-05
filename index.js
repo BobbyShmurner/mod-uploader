@@ -3,11 +3,12 @@ const github = require('@actions/github');
 
 const fs = require('fs');
 const shell = require('shelljs')
+const semver = require('semver')
 
 async function main() {
-	const qmodUrl = core.getInput('qmod');
 	const modJsonPath = core.getInput('mod-json');
 	const modJson = JSON.parse(fs.readFileSync(modJsonPath));
+	var notes = [];
 
 	console.log("Getting Octokit");
 
@@ -38,7 +39,34 @@ async function main() {
 
 	console.log("Getting the repo's mods");
 	const repoMods = JSON.parse(fs.readFileSync("QuestModRepo/mods.json"));
+
+	console.log("Adding mod entry to mod repo");
+
+	if (!repoMods.hasOwnProperty(modJson.packageVersion)) {
+		if (semver.valid(modJson.packageVersion)) {
+			repoMods[modJson.packageVersion] = [];
+
+			const msg = `There were no mods found for the version ${modJson.packageVersion}, so a new verion entry was created`;
+
+			console.warn(msg);
+			notes.push(msg);
+		} else {
+			core.setFailed(`Version ${modJson.packageVersion} is invalid!`);
+		}
+	}
+
+	repoMods[modJson.packageVersion].push(ConstructModEntry(modJson));
 	console.log(JSON.stringify(repoMods, null, 4));
+}
+
+function ConstructModEntry(modJson) {
+	const mod = null;
+
+	mod.name = modJson.name;
+	mod.id = modJson.id;
+	mod.version = modJson.version;
+	mod.description = modJson.description;
+	mod.downloadLink = core.getInput('qmod-url');
 }
 
 try {
