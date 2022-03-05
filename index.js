@@ -79,7 +79,7 @@ async function Main() {
 			branch: `refs/heads/${modJson.id}`
 		};
 
-		const sha = GetCommitSHA(currentUser);
+		const sha = GetFileSHA(currentUser, modJson.id);
 		if (sha != null) {
 			commit.sha = sha;
 		}
@@ -148,19 +148,19 @@ function ConstructModEntry(modJson, currentUser) {
 	return modEntry;
 }
 
-async function GetCommitSHA(currentUser) {
+async function GetFileSHA(currentUser, branchName) {
 	try {
 		const result = await octokit.rest.repos.getContent({
 			owner: currentUser.login,
 			repo: "QuestModRepo",
 			path: "mods.json",
-		})
+			ref: `refs/heads/${branchName}`
+		});
 
 		core.info(`Sha: "${result.data.sha}"`);
 
 		return result.data.sha;
 	} catch (error) {
-		core.info(`Failed to get File SHA: ${error.message}`);
 		return null;
 	}
 }
