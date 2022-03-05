@@ -81,7 +81,7 @@ async function Main() {
 			}
 		}
 
-		const isNewEntry = true;
+		var isNewEntry = true;
 
 		for (var i = 0; i < repoMods[modJson.packageVersion].length; i++) {
 			if (repoMods[modJson.packageVersion][i].id == modJson.id) {
