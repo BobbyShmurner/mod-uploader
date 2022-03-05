@@ -199,7 +199,7 @@ async function CreateBranchInRequired(branchName) {
 }
 
 async function FetchUpstream(repo, upstreamRepo, branch, upstreamBranch) {
-	core.info(`Checking if ${repo}:${branch} is behind ${upstreamRepo}:${upstreamBranch}`);
+	core.info(`Checking if ${repo.owner.login}:${branch} is behind ${upstreamRepo.owner.login}:${upstreamBranch}`);
 
 	const compareResults = (await octokit.rest.repos.compareCommits({
 		owner: upstreamRepo.owner.login,
@@ -209,7 +209,7 @@ async function FetchUpstream(repo, upstreamRepo, branch, upstreamBranch) {
 	})).data;
 
 	if (compareResults.behind_by > 0) {
-		core.info(`${repo.name} is behind by ${compareResults.behind_by} commits. Fetching Upstream...`);
+		core.info(`${repo.owner.login}:${branch} is behind by ${compareResults.behind_by} commits. Fetching Upstream...`);
 
 		const upstreamBranchReference = (await octokit.rest.git.getRef({
 			owner: upstreamRepo.owner.login,
@@ -228,7 +228,7 @@ async function FetchUpstream(repo, upstreamRepo, branch, upstreamBranch) {
 			throw `Failed to fetch upstream. This can be fixed by performing a manual merge\nError: ${error.message}`;
 		}
 	} else {
-		core.info(`${repo.name}:${branch} is up-to-date`);
+		core.info(`${repo.owner.login}:${branch} is up-to-date`);
 	}
 }
 
