@@ -18,19 +18,18 @@ async function Main() {
 		const modJson = JSON.parse(fs.readFileSync(modJsonPath));
 		var notes = [];
 
-		core.info("Getting Octokit");
-
 		core.info("Getting Fork of Mod Repo");
 
 		var modRepo;
-		var hasForked = false;
-		var timeoutTime = (new Date()).getTime() + (60 * 1000);
+		var currentUser;
 
 		try {
 			modRepo = (await octokit.rest.repos.get({
 				owner: github.context.repo.owner,
 				repo: "QuestModRepo"
 			})).data;
+
+			currentUser = modRepo.owner;
 		} catch {
 			throw "Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/BigManBobby/QuestModRepo";
 		}
@@ -65,22 +64,31 @@ async function Main() {
 			}
 		}
 
-		repoMods[modJson.packageVersion].push(ConstructModEntry(modJson, modRepo));
+		repoMods[modJson.packageVersion].push(ConstructModEntry(modJson, currentUser));
 		core.info(JSON.stringify(repoMods, null, 4));
 
 		core.info("Saving modified mods json");
 		fs.writeFileSync('QuestModRepo/mods.json', JSON.stringify(repoMods, null, 4));
 
-		core.info("Commiting modified mods json");
 		shell.cd('QuestModRepo');
+
+		core.info("Setting git identity");
+		shell.exec(`git config --global user.email "${currentUser.email}"`);
+		shell.exec(`git config --global user.name  "${currentUser.name}"`);
+
+		core.info("Commiting modified mods json");
 		shell.exec(`git commit -m "Added ${modJson.name} v${modJson.version} to the mod repo"`);
+
+		core.info("Pushing commit to fork");
 		shell.exec('git push');
+
+		shell.cd('..');
 	} catch (error) {
 		core.setFailed(error);
 	}
 }
 
-function ConstructModEntry(modJson, modRepo) {
+function ConstructModEntry(modJson, currentUser) {
 	var cover = core.getInput('cover');
 	var authorIcon = core.getInput('author-icon');
 
@@ -90,7 +98,7 @@ function ConstructModEntry(modJson, modRepo) {
 	}
 
 	if (authorIcon == '') {
-		authorIcon = modRepo.owner.avatar_url;
+		authorIcon = currentUser.avatar_url;
 	}
 
 	const modEntry = {
