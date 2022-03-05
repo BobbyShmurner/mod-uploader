@@ -57,36 +57,9 @@ async function Main() {
 			throw `${forkedModRepo.html_url} is not a fork of https://github.com/${modRepo.owner.login}/${modRepo.name}`;
 		}
 
-		core.info("Checking if fork is behind");
-		const compareResults = (await octokit.rest.repos.compareCommits({
-			owner: modRepo.owner.login,
-			repo: modRepo.name,
-			base: modRepo.default_branch,
-			head: `${forkedModRepo.owner.login}:${forkedModRepo.default_branch}`
-		})).data;
+		FetchUpstream(forkedModRepo, modRepo, forkedModRepo.default_branch, modRepo.default_branch);
 
-		if (compareResults.behind_by > 0) {
-			core.info(`Fork is behind by ${compareResults.behind_by} commits. Fetching Upstream...`);
-
-			const upstreamBranchReference = (await octokit.rest.git.getRef({
-				owner: modRepo.owner.login,
-				repo: modRepo.name,
-				ref: `heads/${modRepo.default_branch}`
-			})).data;
-
-			try {
-				await repoOctokit.rest.git.updateRef({
-					owner: forkedModRepo.owner.login,
-					repo: forkedModRepo.name,
-					ref: `heads/${forkedModRepo.default_branch}`,
-					sha: upstreamBranchReference.object.sha
-				})
-			} catch (error) {
-				throw `Failed to fetch upstream. This can be fixed by performing a manual merge\n${error.message}`;
-			}
-		} else {
-			core.info("Fork is up-to-date");
-		}
+		await CreateBranchInRequired(modJson.id);
 
 		core.info("Cloning fork");
 		shell.exec(`git clone ${forkedModRepo.html_url}`);
@@ -122,8 +95,6 @@ async function Main() {
 		}
 
 		repoMods[modJson.packageVersion].push(ConstructModEntry(modJson));
-
-		await CreateBranchInRequired(modJson.id);
 
 		core.info("Encoding modified Mods json");
 		const encodedRepoMods = base64.encode(JSON.stringify(repoMods, null, 4));
@@ -208,6 +179,8 @@ async function CreateBranchInRequired(branchName) {
 		});
 
 		core.info("Branch already exists");
+
+		FetchUpstream(forkedModRepo, forkedModRepo, branchName, forkedModRepo.default_branch);
 	} catch {
 		core.info("Branch does not exists, creating it now");
 
@@ -223,6 +196,40 @@ async function CreateBranchInRequired(branchName) {
 			ref: `refs/heads/${branchName}`,
 			sha: sha
 		})
+	}
+}
+
+function FetchUpstream(repo, upstreamRepo, branch, upstreamBranch) {
+	core.info(`Checking if ${repo}:${branch} is behind ${upstreamRepo}:${upstreamBranch}`);
+
+	const compareResults = (await octokit.rest.repos.compareCommits({
+		owner: upstreamRepo.owner.login,
+		repo: upstreamRepo.name,
+		base: upstreamRepo.upstreamBranch,
+		head: `${repo.owner.login}:${branch}`
+	})).data;
+
+	if (compareResults.behind_by > 0) {
+		core.info(`${repo.name} is behind by ${compareResults.behind_by} commits. Fetching Upstream...`);
+
+		const upstreamBranchReference = (await octokit.rest.git.getRef({
+			owner: upstreamRepo.owner.login,
+			repo: upstreamRepo.name,
+			ref: `heads/${upstreamBranch}`
+		})).data;
+
+		try {
+			await repoOctokit.rest.git.updateRef({
+				owner: repo.owner.login,
+				repo: repo.name,
+				ref: `heads/${branch}`,
+				sha: upstreamBranchReference.object.sha
+			})
+		} catch (error) {
+			throw `Failed to fetch upstream. This can be fixed by performing a manual merge\nError: ${error.message}`;
+		}
+	} else {
+		core.info(`${repo.name}:${branch} is up-to-date`);
 	}
 }
 
