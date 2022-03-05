@@ -100,7 +100,7 @@ async function Main() {
 
 		core.info("Commiting moddfied Mods json");
 		var commit = {
-			owner: currentUser.login,
+			owner: forkedModRepo.owner.login,
 			repo: forkedModRepo.name,
 			path: "mods.json",
 			message: `Added ${modJson.name} v${modJson.version} to the Mod Repo`,
@@ -120,7 +120,7 @@ async function Main() {
 			owner: modRepo.owner.login,
 			repo: modRepo.name,
 			state: "open",
-			head: `${currentUser.login}:${modJson.id}`
+			head: `${forkedModRepo.owner.login}:${modJson.id}`
 		})).data;
 
 		var prTitle = "";
@@ -157,7 +157,7 @@ async function Main() {
 				owner: modRepo.owner.login,
 				repo: modRepo.name,
 				title: prTitle,
-				head: `${currentUser.login}:${modJson.id}`,
+				head: `${forkedModRepo.owner.login}:${modJson.id}`,
 				base: modRepo.default_branch,
 				body: prMessage,
 				maintainer_can_modify: true
@@ -172,7 +172,7 @@ async function CreateBranchInRequired(branchName) {
 	core.info(`Checking if "${branchName}" branch exists`);
 	try {
 		await octokit.rest.git.getRef({
-			owner: currentUser.login,
+			owner: forkedModRepo.owner.login,
 			repo: forkedModRepo.name,
 			ref: `heads/${branchName}`
 		});
@@ -182,13 +182,13 @@ async function CreateBranchInRequired(branchName) {
 		core.info("Branch does not exists, creating it now");
 
 		const sha = (await octokit.rest.git.getRef({
-			owner: currentUser.login,
+			owner: forkedModRepo.owner.login,
 			repo: forkedModRepo.name,
 			ref: forkedModRepo.default_branch
 		})).data.object.sha;
 
 		await octokit.rest.git.createRef({
-			owner: currentUser.login,
+			owner: forkedModRepo.owner.login,
 			repo: forkedModRepo.name,
 			ref: `refs/heads/${branchName}`,
 			sha: sha
@@ -267,7 +267,7 @@ function ConstructModEntry(modJson) {
 async function GetFileSHA(branchName) {
 	try {
 		const result = await octokit.rest.repos.getContent({
-			owner: currentUser.login,
+			owner: forkedModRepo.owner.login,
 			repo: forkedModRepo.name,
 			path: "mods.json",
 			ref: `refs/heads/${branchName}`
