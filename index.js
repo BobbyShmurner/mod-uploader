@@ -76,7 +76,7 @@ async function Main() {
 			path: "mods.json",
 			message: `Added ${modJson.name} v${modJson.version} to the Mod Repo`,
 			content: encodedRepoMods,
-			branch: `heads/${modJson.id}`
+			branch: `refs/heads/${modJson.id}`
 		};
 
 		const sha = GetCommitSHA(currentUser);
