@@ -81,7 +81,7 @@ async function Main() {
 		shell.exec(`git commit -m "Added ${modJson.name} v${modJson.version} to the mod repo"`);
 
 		core.info("Pushing commit to fork");
-		shell.exec('git push');
+		shell.exec('git push --set-upstream origin "${modJson.id}"');
 
 		shell.cd('..');
 	} catch (error) {
