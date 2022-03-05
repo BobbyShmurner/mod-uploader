@@ -97,7 +97,7 @@ async function CreateBranchInRequired(branchName, currentUser) {
 		await octokit.rest.git.getRef({
 			owner: currentUser.login,
 			repo: "QuestModRepo",
-			ref: "heads/${branchName}"
+			ref: `heads/${branchName}`
 		});
 
 		core.info("Branch already exists");
