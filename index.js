@@ -2,6 +2,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 
 const fs = require('fs');
+const shell = require('shelljs')
 
 async function main() {
 	const qmodUrl = core.getInput('qmod');
@@ -32,11 +33,12 @@ async function main() {
 		core.setFailed(`${modRepo.html_url} is not a fork of https://github.com/BigManBobby/QuestModRepo`);
 	}
 
-	console.log("Parsing QMod");
+	console.log("Cloning fork");
+	shell.exec(`git clone ${modRepo.html_url}`);
 
-	console.log(`Game Version: ${modJson.ghigiurthgiurthgiurthuigrtuighirughiurthguirtgierkfpowekportjgoijweojrtiogjrewpgjreofkperjgpowekgitjgopwerjouerogjketo}`);
-
-
+	console.log("Getting the repo's mods");
+	const repoMods = JSON.parse(fs.readFileSync("QuestModRepo/mods.json"));
+	console.log(JSON.stringify(repoMods, null, 4));
 }
 
 try {
