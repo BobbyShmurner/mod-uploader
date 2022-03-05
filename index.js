@@ -1,7 +1,10 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const gitToken = core.getInput('token');
+const repotToken = core.getInput('repo-token');
+
 const octokit = github.getOctokit(gitToken);
+const repoOctokit = github.getOctokit(repotToken);
 
 const fs = require('fs');;
 const shell = require('shelljs');
@@ -94,7 +97,7 @@ async function Main() {
 		const commitSha = (await octokit.rest.repos.createOrUpdateFileContents(commit)).data.commit.sha;
 
 		core.info("Creating Pull Request");
-		await octokit.rest.pulls.create({
+		await repoOctokit.rest.pulls.create({
 			owner: "BigManBobby",
 			repo: "QuestModRepo",
 			title: "Test :)",

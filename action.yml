@@ -5,6 +5,9 @@ inputs:
   token:
     description: 'Your Github Token'
     required: true
+  toke:
+    description: 'A Personal Access Token that grants access to repos'
+    required: true
   mod-json:
     description: 'Path to the mod.json'
     required: true
