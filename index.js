@@ -178,8 +178,6 @@ async function CreateBranchInRequired(branchName) {
 		});
 
 		core.info("Branch already exists");
-
-		await FetchUpstream(forkedModRepo, forkedModRepo, branchName, forkedModRepo.default_branch);
 	} catch {
 		core.info("Branch does not exists, creating it now");
 
@@ -195,7 +193,12 @@ async function CreateBranchInRequired(branchName) {
 			ref: `refs/heads/${branchName}`,
 			sha: sha
 		})
+
+		return;
 	}
+
+	// This will only run if the branch already existed, as there's a return in the catch statement
+	await FetchUpstream(forkedModRepo, forkedModRepo, branchName, forkedModRepo.default_branch);
 }
 
 async function FetchUpstream(repo, upstreamRepo, branch, upstreamBranch) {
