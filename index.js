@@ -181,12 +181,10 @@ async function CreateBranchIfRequired(branchName) {
 	} catch {
 		core.info("Branch does not exists, creating it now");
 
-		core.info(`Default Branch: ${forkedModRepo.default_branch}`);
-
 		const sha = (await octokit.rest.git.getRef({
 			owner: forkedModRepo.owner.login,
 			repo: forkedModRepo.name,
-			ref: forkedModRepo.default_branch
+			ref: `heads/${forkedModRepo.default_branch}`
 		})).data.object.sha;
 
 		core.info(`Got SHA: ${sha}`);
