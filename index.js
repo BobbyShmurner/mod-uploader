@@ -64,6 +64,8 @@ async function Main() {
 
 		repoMods[modJson.packageVersion].push(ConstructModEntry(modJson, currentUser));
 
+		await CreateBranchInRequired(modJson.id, currentUser);
+
 		core.info("Encoding modified Mods json");
 		const encodedRepoMods = base64.encode(JSON.stringify(repoMods, null, 4));
 
@@ -74,18 +76,46 @@ async function Main() {
 			path: "mods.json",
 			message: `Added ${modJson.name} v${modJson.version} to the Mod Repo`,
 			content: encodedRepoMods,
-			branch: modJson.id
+			branch: `heads/${modJson.id}`
 		};
 
-		const sha = GetSHA(currentUser);
+		const sha = GetCommitSHA(currentUser);
 		if (sha != null) {
 			commit.sha = sha;
 		}
 
-		await octokit.rest.repos.createOrUpdateFileContents(commit);
+		const commitSha = (await octokit.rest.repos.createOrUpdateFileContents(commit)).data.commit.sha;
 
 	} catch (error) {
 		core.setFailed(error);
+	}
+}
+
+async function CreateBranchInRequired(branchName, currentUser) {
+	core.info(`Checking if "$branchName}" branch exists`);
+	try {
+		await octokit.rest.git.getRef({
+			owner: currentUser.login,
+			repo: "QuestModRepo",
+			ref: "heads/${branchName}"
+		});
+
+		core.info("Branch already exists");
+	} catch {
+		core.info("Branch does not exists, creating it now");
+
+		const sha = (await octokit.rest.git.getRef({
+			owner: currentUser.login,
+			repo: "QuestModRepo",
+			ref: "heads/master"
+		})).data.object.sha;
+
+		await octokit.rest.git.createRef({
+			owner: currentUser.login,
+			repo: "QuestModRepo",
+			ref: "heads/${branchName}",
+			sha: sha
+		})
 	}
 }
 
@@ -118,7 +148,7 @@ function ConstructModEntry(modJson, currentUser) {
 	return modEntry;
 }
 
-async function GetSHA(currentUser) {
+async function GetCommitSHA(currentUser) {
 	try {
 		const result = await octokit.repos.getContent({
 			owner: currentUser.login,
