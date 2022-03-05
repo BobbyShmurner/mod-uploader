@@ -73,8 +73,9 @@ async function Main() {
 		shell.cd('QuestModRepo');
 
 		core.info("Setting git identity");
+		core.info(`Email: "${currentUser.email}", Username: "${currentUser.name}"`);
 		shell.exec(`git config --global user.email "${currentUser.email}"`);
-		shell.exec(`git config --global user.name  "${currentUser.name}"`);
+		shell.exec(`git config --global user.name "${currentUser.name}"`);
 
 		core.info("Commiting modified mods json");
 		shell.exec(`git add mods.json`);
