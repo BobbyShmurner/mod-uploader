@@ -42,6 +42,11 @@ async function Main() {
 		core.info("Cloning fork");
 		shell.exec(`git clone ${modRepo.html_url}`);
 
+		core.info(`Checking out "${modJson.id}"`);
+		shell.cd("QuestModRepo");
+		shell.exec(`git checkout ${modJson.id} 2>/dev/null || git checkout -b ${modJson.id}`);
+		shell.cd("..");
+
 		core.info("Getting the repo's mods");
 		const repoMods = JSON.parse(fs.readFileSync("QuestModRepo/mods.json"));
 
@@ -62,6 +67,14 @@ async function Main() {
 
 		repoMods[modJson.packageVersion].push(ConstructModEntry(modJson, modRepo));
 		core.info(JSON.stringify(repoMods, null, 4));
+
+		core.info("Saving modified mods json");
+		fs.writeFileSync('QuestModRepo/mods.json', JSON.stringify(repoMods, null, 4));
+
+		core.info("Commiting modified mods json");
+		shell.cd('QuestModRepo');
+		shell.exec(`git commit -m "Added ${modJson.name} v${modJson.version} to the mod repo"`);
+		shell.exec('git push');
 	} catch (error) {
 		core.setFailed(error);
 	}
