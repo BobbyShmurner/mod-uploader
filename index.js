@@ -57,8 +57,7 @@ async function Main() {
 			throw `${forkedModRepo.html_url} is not a fork of https://github.com/${modRepo.owner.login}/${modRepo.name}`;
 		}
 
-		FetchUpstream(forkedModRepo, modRepo, forkedModRepo.default_branch, modRepo.default_branch);
-
+		await FetchUpstream(forkedModRepo, modRepo, forkedModRepo.default_branch, modRepo.default_branch);
 		await CreateBranchInRequired(modJson.id);
 
 		core.info("Cloning fork");
@@ -180,7 +179,7 @@ async function CreateBranchInRequired(branchName) {
 
 		core.info("Branch already exists");
 
-		FetchUpstream(forkedModRepo, forkedModRepo, branchName, forkedModRepo.default_branch);
+		await FetchUpstream(forkedModRepo, forkedModRepo, branchName, forkedModRepo.default_branch);
 	} catch {
 		core.info("Branch does not exists, creating it now");
 
@@ -199,7 +198,7 @@ async function CreateBranchInRequired(branchName) {
 	}
 }
 
-function FetchUpstream(repo, upstreamRepo, branch, upstreamBranch) {
+async function FetchUpstream(repo, upstreamRepo, branch, upstreamBranch) {
 	core.info(`Checking if ${repo}:${branch} is behind ${upstreamRepo}:${upstreamBranch}`);
 
 	const compareResults = (await octokit.rest.repos.compareCommits({
