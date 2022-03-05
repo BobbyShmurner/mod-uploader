@@ -12,7 +12,7 @@ jobs:
       uses: actions/github-script@v5
       with:
         script: |
-          await octokit.rest.actions.createWorkflowDispatch({
+          await github.rest.actions.createWorkflowDispatch({
             owner: 'BobbyShmurner',
             repo: 'QuestModRepo',
             workflow_id: 'workflows/publish.yaml'
