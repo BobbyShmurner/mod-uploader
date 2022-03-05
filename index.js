@@ -81,8 +81,8 @@ async function Main() {
 					ref: `heads/${forkedModRepo.default_branch}`,
 					sha: upstreamBranchReference.object.sha
 				})
-			} catch {
-				throw "Failed to fetch upstream. This can be fixed by performing a manual merge";
+			} catch (error) {
+				throw `Failed to fetch upstream. This can be fixed by performing a manual merge\n${error.message}`;
 			}
 		} else {
 			core.info("Fork is up-to-date");
