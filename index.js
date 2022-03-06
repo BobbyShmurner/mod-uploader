@@ -76,7 +76,7 @@ async function Main() {
 						repo: modRepo.name
 					})).data;
 
-					return;
+					break;
 				} catch (error) {
 					core.info(`Failed: ${error.message}`);
 
