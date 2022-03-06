@@ -270,7 +270,7 @@ async function GetFileSHA(branchName) {
 			owner: forkedModRepo.owner.login,
 			repo: forkedModRepo.name,
 			path: "mods.json",
-			ref: `refs/ heads / ${branchName}`
+			ref: `refs/heads/${branchName}`
 		});
 
 		return result.data.sha;
