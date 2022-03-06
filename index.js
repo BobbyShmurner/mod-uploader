@@ -225,7 +225,8 @@ async function FetchUpstream(repo, upstreamRepo, branch, upstreamBranch) {
 				owner: repo.owner.login,
 				repo: repo.name,
 				ref: `heads/${branch}`,
-				sha: upstreamBranchReference.object.sha
+				sha: upstreamBranchReference.object.sha,
+				force: true
 			})
 		} catch (error) {
 			throw `Failed to fetch upstream. This can be fixed by performing a manual merge\nError: ${error.message}`;
