@@ -113,7 +113,7 @@ async function Main() {
 			commit.sha = sha;
 		}
 
-		await octokit.rest.repos.createOrUpdateFileContents(commit);
+		await repoOctokit.rest.repos.createOrUpdateFileContents(commit);
 
 		core.info("Checking if Pull Request Exists for branch");
 		const prs = (await octokit.rest.pulls.list({
