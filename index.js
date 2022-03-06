@@ -167,11 +167,14 @@ async function Main() {
 
 		if (isNewEntry) {
 			prTitle = `Added ${modJson.name} v${modJson.version} to the mod repo`;
-			prMessage = `Added ${modJson.name} v${modJson.version} to the mod repo for Beat Saber version ${modJson.packageVersion}.\n\nYou can check out the build action [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId})`;
+			prMessage = `Added ${modJson.name} v${modJson.version} to the mod repo for Beat Saber version ${modJson.packageVersion}.`;
 		} else {
 			prTitle = `Updated ${modJson.name} to v${modJson.version}`;
-			prMessage = `Updated ${modJson.name} to v${modJson.version} for Beat Saber version ${modJson.packageVersion}.\n\nYou can check out the build action [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId})`;
+			prMessage = `Updated ${modJson.name} to v${modJson.version} for Beat Saber version ${modJson.packageVersion}.`;
 		}
+
+		prMessage += `\n\nYou can check out the build action [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId})`;
+		prMessage += `\nYou can check out the release [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/tag/${core.getInput('tag')})`;
 
 		if (notes.length > 0) {
 			prMessage += "\n\n**Notes:**";
