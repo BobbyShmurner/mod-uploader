@@ -11,6 +11,9 @@ const shell = require('shelljs');
 const semver = require('semver');
 const base64 = require('js-base64');
 
+const MOD_REPO_NAME = "QuestModRepo";
+const MOD_REPO_OWNER = "BigManBobby";
+
 var modRepo;
 var forkedModRepo;
 var currentUser;
@@ -27,17 +30,6 @@ async function Main() {
 
 		const modJson = JSON.parse(fs.readFileSync(modJsonPath));
 
-		core.info("Getting Mod Repo");
-
-		try {
-			modRepo = (await octokit.rest.repos.get({
-				owner: "BigManBobby",
-				repo: "QuestModRepo"
-			})).data;
-		} catch {
-			throw "Failed to retrive the mod repo. Please contact Bobby Shmurner on discord";
-		}
-
 		core.info("Getting Fork of Mod Repo");
 
 		try {
@@ -50,12 +42,31 @@ async function Main() {
 				username: forkedModRepo.owner.login
 			})).data;
 		} catch {
-			throw `Failed to find fork of the Mod Repo. Please make sure a fork of the repo exists. You can find the repo here: https://github.com/${modRepo.owner.login}/${modRepo.name}`;
+			core.warning("Failed to find a fork of the mod repo, creating it now");
+			notes.push(`${github.context.repo.owner} didn't originally have a fork of the repo, so one was created for them`);
+
+			core.info("Getting Mod Repo");
+
+			try {
+				modRepo = (await octokit.rest.repos.get({
+					owner: MOD_REPO_OWNER,
+					repo: MOD_REPO_NAME
+				})).data;
+			} catch {
+				throw "Failed to retrive the mod repo. Please contact Bobby Shmurner on discord";
+			}
+
+			forkedModRepo = (await repoOctokit.rest.repos.createFork({
+				owner: MOD_REPO_OWNER,
+				repo: MOD_REPO_NAME
+			})).data;
 		}
 
 		if (!forkedModRepo.fork) {
-			throw `${forkedModRepo.html_url} is not a fork of https://github.com/${modRepo.owner.login}/${modRepo.name}`;
+			throw `${forkedModRepo.html_url} is not a fork of https://github.com/${MOD_REPO_OWNER}/${MOD_REPO_NAME}`;
 		}
+
+		modRepo = forkedModRepo.parent;
 
 		await FetchUpstream(forkedModRepo, modRepo, forkedModRepo.default_branch, modRepo.default_branch);
 		await CreateBranchIfRequired(modJson.id);
