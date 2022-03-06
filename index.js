@@ -46,7 +46,7 @@ async function Main() {
 			})).data;
 		} catch {
 			core.warning("Failed to find a fork of the mod repo, creating it now");
-			notes.push(`${github.context.repo.owner} didn't originally have a fork of the repo, so one was created for them`);
+			notes.push(`I didn't originally have a fork of the mod repo, so the workflow created one for me`);
 
 			core.info("Getting Mod Repo");
 
