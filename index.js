@@ -187,7 +187,7 @@ async function CreateBranchIfRequired(branchName) {
 			ref: `heads/${forkedModRepo.default_branch}`
 		})).data.object.sha;
 
-		await octokit.rest.git.createRef({
+		await repoOctokit.rest.git.createRef({
 			owner: forkedModRepo.owner.login,
 			repo: forkedModRepo.name,
 			ref: `refs/heads/${branchName}`,
