@@ -42,7 +42,7 @@ async function Main() {
 		try {
 			forkedModRepo = (await octokit.rest.repos.get({
 				owner: github.context.repo.owner,
-				repo: modRepo.name
+				repo: MOD_REPO_NAME
 			})).data;
 		} catch {
 			core.warning("Failed to find a fork of the mod repo, creating it now");
