@@ -277,6 +277,7 @@ async function GetFileSHA(branchName) {
 		return result.data.sha;
 	} catch (error) {
 		core.warning(`Failed to get the SHA of the repo's "mods.json"\nError: ${error.message}`);
+		notes.push(`Failed to get the SHA of the fork's "mods.json", which means a new file was created. This *shouldn't* cause any issues, but it should still be noted`);
 		return null;
 	}
 }
