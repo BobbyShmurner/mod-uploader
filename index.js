@@ -13,6 +13,7 @@ const base64 = require('js-base64');
 
 const MOD_REPO_NAME = "QuestModRepo";
 const MOD_REPO_OWNER = "BigManBobby";
+const MAX_FORK_GET_ATTEMPTS = 12;
 
 var modRepo;
 var forkedModRepo;
@@ -30,16 +31,18 @@ async function Main() {
 
 		const modJson = JSON.parse(fs.readFileSync(modJsonPath));
 
+		core.info("Getting Current User");
+
+		currentUser = (await octokit.rest.users.getByUsername({
+			username: github.context.repo.owner
+		})).data;
+
 		core.info("Getting Fork of Mod Repo");
 
 		try {
 			forkedModRepo = (await octokit.rest.repos.get({
 				owner: github.context.repo.owner,
 				repo: modRepo.name
-			})).data;
-
-			currentUser = (await octokit.rest.users.getByUsername({
-				username: forkedModRepo.owner.login
 			})).data;
 		} catch {
 			core.warning("Failed to find a fork of the mod repo, creating it now");
@@ -56,10 +59,35 @@ async function Main() {
 				throw "Failed to retrive the mod repo. Please contact Bobby Shmurner on discord";
 			}
 
-			forkedModRepo = (await repoOctokit.rest.repos.createFork({
+			core.info("Creating Fork");
+
+			await repoOctokit.rest.repos.createFork({
 				owner: MOD_REPO_OWNER,
 				repo: MOD_REPO_NAME
-			})).data;
+			});
+
+			core.info("Getting Fork");
+			var failCount = 0;
+
+			while (true) {
+				try {
+					forkedModRepo = (await octokit.rest.repos.get({
+						owner: github.context.repo.owner,
+						repo: modRepo.name
+					})).data;
+
+					return;
+				} catch (error) {
+					core.info(`Failed: ${error.message}`);
+
+					failCount++;
+					if (failCount > MAX_FORK_GET_ATTEMPTS) {
+						throw `Failed to get fork of mod repo: Reached max get attempts\nError: ${error.message}`;
+					}
+
+					await new Promise(resolve => setTimeout(resolve, 5000));
+				}
+			}
 		}
 
 		if (!forkedModRepo.fork) {
