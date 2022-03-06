@@ -175,7 +175,7 @@ async function Main() {
 
 		prMessage += `\n\nYou can check out the build action [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId})`;
 		prMessage += `\nYou can check out the release [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/tag/${core.getInput('tag')})`;
-		prMessage += `\nYou can download the QMod [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/download/${core.getInput('tag')}/${core.getInput('qmod - name')})`;
+		prMessage += `\nYou can download the QMod [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/download/${core.getInput('tag')}/${core.getInput('qmod-name')})`;
 
 		if (notes.length > 0) {
 			prMessage += "\n\n**Notes:**";
