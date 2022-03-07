@@ -155,12 +155,7 @@ async function Main() {
 		await repoOctokit.rest.repos.createOrUpdateFileContents(commit);
 
 		core.info("Checking if Pull Request Exists for branch");
-		const prs = (await octokit.rest.pulls.list({
-			owner: modRepo.owner.login,
-			repo: modRepo.name,
-			state: "open",
-			head: `${forkedModRepo.owner.login}:${modJson.id}`
-		})).data;
+		var prs = await GetPRs(`${forkedModRepo.owner.login}:${modJson.id}`);
 
 		var prTitle = "";
 		var prMessage = "";
@@ -205,7 +200,11 @@ async function Main() {
 				body: prMessage,
 				maintainer_can_modify: true
 			})
+
+			prs = await GetPRs(`${forkedModRepo.owner.login}:${modJson.id}`);
 		}
+
+		core.info(`Success! PR can be found here: ${prs[0].html_url}`);
 	} catch (error) {
 		core.setFailed(error);
 	}
@@ -329,6 +328,15 @@ async function GetFileSHA(branchName) {
 		notes.push(`Failed to get the SHA of the fork's "mods.json", which means a new file was created. This *shouldn't* cause any issues, but it should still be noted`);
 		return null;
 	}
+}
+
+async function GetPRs(head) {
+	return (await octokit.rest.pulls.list({
+		owner: modRepo.owner.login,
+		repo: modRepo.name,
+		state: "open",
+		head: head
+	})).data;
 }
 
 Main();
