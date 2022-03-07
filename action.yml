@@ -19,7 +19,7 @@ inputs:
     default: 'mod.json'
     required: true
   cover:
-    description: "URL to the author's icon. By default the URL to 'cover.png' will be used"
+    description: "URL to the cover of the mod. By default the URL to 'cover.png' will be used"
   author-icon:
     description: "URL to the author's icon. By default the repo's owner's pfp will be used"
   
