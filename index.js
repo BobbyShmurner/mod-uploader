@@ -284,8 +284,14 @@ function ConstructModEntry(modJson) {
 	var authorIcon = core.getInput('author-icon');
 
 	if (cover == '') {
-		if (!fs.existsSync('cover.png')) throw 'No core image was specifed, and "cover.png" could not be found';
-		cover = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/raw/${github.context.ref}/cover.png`
+		if (!fs.existsSync('cover.png')) {
+			const msg = '"cover" was not specified, and "cover.png" could not be found in the root of the repo, so no cover was set';
+
+			core.warning(msg);
+			notes += msg;
+		} else {
+			cover = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/raw/${github.context.ref}/cover.png`
+		}
 	}
 
 	if (authorIcon == '') {
