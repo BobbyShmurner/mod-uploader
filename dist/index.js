@@ -19243,7 +19243,7 @@ async function Main() {
 			prs = await GetPRs(`${forkedModRepo.owner.login}:${modJson.id}`);
 		}
 
-		core.info(`Success! PR can be found here: ${prs[0].html_url}`);
+		core.info(`\nSuccess! PR can be found here: ${prs[0].html_url}`);
 	} catch (error) {
 		core.setFailed(error);
 	}
