@@ -25,6 +25,8 @@ async function Main() {
 	try {
 		const modJsonPath = core.getInput('mod-json');
 
+		console.log(process.cwd);
+
 		fs.readdirSync("./").forEach(file => {
 			console.log(file);
 		});
