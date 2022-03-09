@@ -10,6 +10,8 @@ This is your GitHub token. This should always be `${{ secrets.GITHUB_TOKEN }}`
 
 `qmod-name`: The asset name of the QMod. 
 
+`qmod-url`: A custom URL to a QMod. This isn't required, but if it is specified, it will be used instead of `qmod-name`
+
 `tag`: The tag that the release is being released under. This should usually just be `${{github.ref_name}}`
 
 `mod-json`: The path to the `mod.json` file in your repo. This defaults to `mod.json`
@@ -17,6 +19,8 @@ This is your GitHub token. This should always be `${{ secrets.GITHUB_TOKEN }}`
 `cover`: A URL to the cover of the mod. If left blank, the action will check your repo for a `cover.png` in the root. If one isn't found, the cover will be left blank
 
 `author-icon`: A URL to the author's icon. If left blank, the icon will default to the repo's owner's pfp
+
+`note`: A custom note to add to the PR message
 
 # Setup & Usage
 
