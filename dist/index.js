@@ -19199,7 +19199,7 @@ async function Main() {
 		var prTitle = "";
 		var prMessage = "";
 
-		if (isNewEntry && prs.length > 0) {
+		if (isNewEntry && prs.length == 0) {
 			prTitle = `Added ${modJson.name} v${modJson.version} to the mod repo`;
 			prMessage = `Added ${modJson.name} v${modJson.version} to the mod repo for Beat Saber version ${modJson.packageVersion}.`;
 		} else {
@@ -19342,6 +19342,7 @@ function ConstructModEntry(modJson) {
 		id: modJson.id,
 		version: modJson.version,
 		downloadLink: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/download/${core.getInput('tag')}/${core.getInput('qmod-name')}`,
+		source: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/`,
 		cover: cover,
 		author: {
 			name: modJson.author,
@@ -19379,6 +19380,7 @@ async function GetPRs(head) {
 }
 
 Main();
+
 })();
 
 module.exports = __webpack_exports__;
