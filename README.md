@@ -127,6 +127,7 @@ jobs:
           note: ${{ github.event.inputs.note }}
 ```
 
-You can use this action to easily create a PR that can be customise to your liking
+You can use this action to easily create a PR that can be customise to your liking.
+**Note:** If you use a `mod.template.json` instead of a `mod.json`, make sure to run `qpm-rust qmod build` first
 
 And that's it! You're ready to start releasing mods for everyone to see and play! You should be proud of yourself :D

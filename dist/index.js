@@ -19050,8 +19050,8 @@ const shell = __nccwpck_require__(5389);
 const semver = __nccwpck_require__(6370);
 const base64 = __nccwpck_require__(2156);
 
-const MOD_REPO_NAME = "QuestModRepo";
-const MOD_REPO_OWNER = "BigManBobby";
+const MOD_REPO_NAME = "QuestBeatSaberModsRepo";
+const MOD_REPO_OWNER = "QuestModding";
 const MAX_FORK_GET_ATTEMPTS = 12;
 
 var modRepo;
