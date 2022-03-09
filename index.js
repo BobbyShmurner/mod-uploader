@@ -180,6 +180,10 @@ async function Main() {
 			}
 		}
 
+		if (core.getInput('note') != '') {
+			prMessage += `\n- ${core.getInput('note')}`;
+		}
+
 		if (prs.length > 0) {
 			core.info("PR alread exists. Will just be adding a message to the existing PR");
 
@@ -281,6 +285,7 @@ async function FetchUpstream(repo, upstreamRepo, branch, upstreamBranch) {
 function ConstructModEntry(modJson) {
 	var cover = core.getInput('cover');
 	var authorIcon = core.getInput('author-icon');
+	var downloadLink = core.getInput('qmod-url');
 
 	if (cover == '') {
 		if (!fs.existsSync('cover.png')) {
@@ -297,12 +302,17 @@ function ConstructModEntry(modJson) {
 		authorIcon = currentUser.avatar_url;
 	}
 
+	if (downloadLink == '') {
+		if (core.getInput('tag') == '') throw '"tag" and "qmod-url" were not specified. Please specify at least one';
+		downloadLink = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/download/${core.getInput('tag')}/${core.getInput('qmod-name')}`;
+	}
+
 	const modEntry = {
 		name: modJson.name,
 		description: modJson.description,
 		id: modJson.id,
 		version: modJson.version,
-		downloadLink: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/download/${core.getInput('tag')}/${core.getInput('qmod-name')}`,
+		downloadLink: downloadLink,
 		source: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/`,
 		cover: cover,
 		author: {
