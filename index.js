@@ -11,8 +11,8 @@ const shell = require('shelljs');
 const semver = require('semver');
 const base64 = require('js-base64');
 
-const MOD_REPO_NAME = "QuestBeatSaberModsRepo";
-const MOD_REPO_OWNER = "QuestModding";
+const MOD_REPO_NAME = "QuestModRepo";
+const MOD_REPO_OWNER = "BigManBobby";
 const MAX_FORK_GET_ATTEMPTS = 12;
 
 var modRepo;
