@@ -12,7 +12,7 @@ This is your GitHub token. This should always be `${{ secrets.GITHUB_TOKEN }}`
 
 `qmod-url`: A custom URL to a QMod. This isn't required, but if it is specified, it will be used instead of `qmod-name`
 
-`tag`: The tag that the release is being released under. This should usually just be `${{github.ref_name}}`
+`tag`: The tag that the release is being released under. This should usually just be `${{github.ref_name}}`. This is not required if `qmod-url` is supplied
 
 `mod-json`: The path to the `mod.json` file in your repo. This defaults to `mod.json`
 
@@ -25,7 +25,7 @@ This is your GitHub token. This should always be `${{ secrets.GITHUB_TOKEN }}`
 # Setup & Usage
 
 To use this action you'll need two things:
- - A "Publish" Workflow for your mod that builds and releases a QMod to GitHub
+ - A CLI Workflows that'll allow you to use this action. This should either be a "Publish" workflow, or a manual workflow that allows for specific inputs
  - A **Personal Access Token** that has access to the **repo** scope
 
 I won't be going over how to create a publish workflow, but if you'd like to see an example of one, you can check out [The publish script for Hot-Swappable Mods](https://github.com/BobbyShmurner/HotSwappableMods/blob/master/.github/workflows/publish.yml) **(NOTE: I'll be changing this to the mod downloader when it's released, as it'll be more up-to-date than HSM)**
@@ -52,7 +52,7 @@ So now that you've got your shiny new token, head over to your mod's repo to set
 3. I'd recommend calling it `REPO_TOKEN`. Whatever you decide to call it, make sure you remember it, because you'll need it later.
 4. Paste in your PAT into to **Value** input and click **Add secret**. You can now forget about the PAT, you won't be needing it anymore.
 
-## Using the Action
+## Using the Action - Publish Workflow
 
 So now that we've set up the repo for use with the action, it's about time we start using it, don't you think?
 
@@ -83,5 +83,48 @@ So now that we've set up the repo for use with the action, it's about time we st
     ```
 
     I would set `qmod-name` to be `${{env.qmodName}}-v${{ steps.get_tag_version.outputs.VERSION }}.qmod`
+    
+# Using the Action - Manual Workflow
+
+What if you don't want to use a "Publsih" Workflow? What if you want to use a custom URL for your QMod? Then your best bet is to use a "Manual" Workflow. This is a workflow that you can manually trigger whenever, and you can pass in inputs for the action's parameters.
+
+Here you can see an example of a Manual Workflow:
+```yml
+on: 
+  workflow_dispatch:
+    inputs:
+      qmod-url:
+        description: 'QMod URL'     
+        required: true
+        type: string
+      cover:
+        description: 'Cover URL'
+        required: false 
+        type: string
+      author-icon:
+        description: "Author's PFP URL"
+        required: false 
+        type: string
+      note:
+        description: 'A note to pass to include in the PR's message'
+        required: false 
+        type: string
+        
+jobs:
+  publish-to-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload QMod to Mod Repo
+        uses: BobbyShmurner/mod-uploader@v1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.REPO_TOKEN }}
+          qmod-url: ${{ github.event.inputs.qmod-url }}
+          cover: ${{ github.event.inputs.cover }}
+          author-icon: ${{ github.event.inputs.author-icon }}
+          note: ${{ github.event.inputs.note }}
+```
+
+You can use this action to easily create a PR that can be customise to your liking
 
 And that's it! You're ready to start releasing mods for everyone to see and play! You should be proud of yourself :D
