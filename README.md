@@ -20,7 +20,7 @@ This is your GitHub token. This should always be `${{ secrets.GITHUB_TOKEN }}`
 
 `author-icon`: A URL to the author's icon. If left blank, the icon will default to the repo's owner's pfp
 
-`note`: A custom note to add to the PR message
+`note`: A custom note to add to the PR message. This can be left blank
 
 # Setup & Usage
 
