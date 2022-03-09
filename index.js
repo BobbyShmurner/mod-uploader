@@ -25,6 +25,10 @@ async function Main() {
 	try {
 		const modJsonPath = core.getInput('mod-json');
 
+		fs.readdirSync(testFolder).forEach(file => {
+			console.log(file);
+		});
+
 		if (!fs.existsSync(modJsonPath)) {
 			throw `File "${modJsonPath}" does not exist`;
 		}
