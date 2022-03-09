@@ -90,6 +90,8 @@ What if you don't want to use a "Publsih" Workflow? What if you want to use a cu
 
 Here you can see an example of a Manual Workflow:
 ```yml
+name: Publish to Mod Repo
+
 on: 
   workflow_dispatch:
     inputs:
@@ -106,7 +108,7 @@ on:
         required: false 
         type: string
       note:
-        description: 'A note to pass to include in the PR's message'
+        description: "PR Note"
         required: false 
         type: string
         
