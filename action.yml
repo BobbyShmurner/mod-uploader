@@ -8,9 +8,6 @@ inputs:
   repo-token:
     description: 'A Personal Access Token that grants access to repos'
     required: true
-  qmod-name:
-    description: 'Name of QMod Asset. NOTE: This is the name of the uploaded file, not the file on disk'
-    required: true
   tag:
     description: 'The tag of the release'
     required: true
@@ -22,7 +19,13 @@ inputs:
     description: "URL to the cover of the mod. By default the URL to 'cover.png' will be used"
   author-icon:
     description: "URL to the author's icon. By default the repo's owner's pfp will be used"
-  
+  qmod-name:
+    description: 'Name of QMod Asset. NOTE: This is the name of the uploaded file, not the file on disk'
+  qmod-url:
+    description: 'A custom URL to a qmod. This is mutually exclusive with "qmod-name"'
+  note:
+    description: 'A custom note to pass to the PR message'
+
 runs:
   using: 'node16'
   main: 'dist/index.js'
