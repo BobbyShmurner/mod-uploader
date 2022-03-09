@@ -84,7 +84,7 @@ So now that we've set up the repo for use with the action, it's about time we st
 
     I would set `qmod-name` to be `${{env.qmodName}}-v${{ steps.get_tag_version.outputs.VERSION }}.qmod`
     
-# Using the Action - Manual Workflow
+## Using the Action - Manual Workflow
 
 What if you don't want to use a "Publsih" Workflow? What if you want to use a custom URL for your QMod? Then your best bet is to use a "Manual" Workflow. This is a workflow that you can manually trigger whenever, and you can pass in inputs for the action's parameters.
 
