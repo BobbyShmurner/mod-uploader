@@ -116,6 +116,13 @@ jobs:
   publish-to-repo:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        name: Checkout
+        with:
+          submodules: true
+          lfs: true
+        
       - name: Upload QMod to Mod Repo
         uses: BobbyShmurner/mod-uploader@v1.0
         with:
