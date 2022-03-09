@@ -19066,7 +19066,7 @@ async function Main() {
 
 		console.log(process.cwd());
 
-		fs.readdirSync("./").forEach(file => {
+		fs.readdirSync(process.cwd()).forEach(file => {
 			console.log(file);
 		});
 
