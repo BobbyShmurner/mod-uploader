@@ -160,7 +160,7 @@ async function Main() {
 		var prTitle = "";
 		var prMessage = "";
 
-		if (isNewEntry && prs.length > 0) {
+		if (isNewEntry && prs.length == 0) {
 			prTitle = `Added ${modJson.name} v${modJson.version} to the mod repo`;
 			prMessage = `Added ${modJson.name} v${modJson.version} to the mod repo for Beat Saber version ${modJson.packageVersion}.`;
 		} else {
