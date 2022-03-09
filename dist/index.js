@@ -19063,6 +19063,7 @@ var notes = [];
 async function Main() {
 	try {
 		const modJsonPath = core.getInput('mod-json');
+		if (modJsonPath == '') modJsonPath = "mod.json";
 
 		if (!fs.existsSync(modJsonPath)) {
 			throw `File "${modJsonPath}" does not exist`;
