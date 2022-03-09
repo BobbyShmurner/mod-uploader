@@ -24,7 +24,7 @@ To use this action you'll need two things:
  - A "Publish" Workflow for your mod that builds and releases a QMod to GitHub
  - A **Personal Access Token** that has access to the **repo** scope
 
-I won't be going over how to create a publish workflow, but if you'd like to see an example of one, you can check out [The publish script for Hot-Swappable Mods](https://github.com/BobbyShmurner/HotSwappableMods/blob/master/.github/workflows/publish.yml) **(NOTE: I'll be changing this to he mod downloader when it's released, as it'll be more up-to-date than HSM)**
+I won't be going over how to create a publish workflow, but if you'd like to see an example of one, you can check out [The publish script for Hot-Swappable Mods](https://github.com/BobbyShmurner/HotSwappableMods/blob/master/.github/workflows/publish.yml) **(NOTE: I'll be changing this to the mod downloader when it's released, as it'll be more up-to-date than HSM)**
 
 ## Creating the Personal Access Token
 
