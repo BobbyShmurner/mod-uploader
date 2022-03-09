@@ -1,6 +1,6 @@
 # Mod Uploader
-Used to Upload Mods to the Beat Saber Quest Mods Repository
-
+Used to Upload Mods to the [Beat Saber Quest Mods Repository](
+https://github.com/QuestModding/QuestBeatSaberModsRepo)
 # Parameters
 
 `token`:
