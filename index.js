@@ -303,6 +303,7 @@ function ConstructModEntry(modJson) {
 		id: modJson.id,
 		version: modJson.version,
 		downloadLink: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/download/${core.getInput('tag')}/${core.getInput('qmod-name')}`,
+		source: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/`
 		cover: cover,
 		author: {
 			name: modJson.author,
