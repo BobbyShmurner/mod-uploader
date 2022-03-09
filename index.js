@@ -24,13 +24,6 @@ var notes = [];
 async function Main() {
 	try {
 		const modJsonPath = core.getInput('mod-json');
-
-		console.log(process.cwd());
-
-		fs.readdirSync(process.cwd()).forEach(file => {
-			console.log(file);
-		});
-
 		if (!fs.existsSync(modJsonPath)) {
 			throw `File "${modJsonPath}" does not exist`;
 		}
@@ -174,7 +167,7 @@ async function Main() {
 			prMessage = `Updated ${modJson.name} to v${modJson.version} for Beat Saber version ${modJson.packageVersion}.`;
 		}
 
-		prMessage += `\n\nYou can check out the release [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/tag/${core.getInput('tag')})`;
+		if (core.getInput('tag') != '') prMessage += `\n\nYou can check out the release [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/tag/${core.getInput('tag')})`;
 		prMessage += `\nYou can download the QMod [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/download/${core.getInput('tag')}/${core.getInput('qmod-name')})`;
 		prMessage += `\nYou can check out the build action [Here](https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.context.runId})`;
 
