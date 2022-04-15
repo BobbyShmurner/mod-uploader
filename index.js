@@ -283,6 +283,7 @@ async function FetchUpstream(repo, upstreamRepo, branch, upstreamBranch) {
 
 function ConstructModEntry(modJson) {
 	var cover = core.getInput('cover');
+	var authors = core.getInput('authors');
 	var authorIcon = core.getInput('author-icon');
 	var downloadLink = core.getInput('qmod-url');
 
@@ -295,6 +296,10 @@ function ConstructModEntry(modJson) {
 		} else {
 			cover = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/raw/${github.context.ref}/cover.png`
 		}
+	}
+
+	if (authors == '') {
+		authors = modJson.author;
 	}
 
 	if (authorIcon == '') {
@@ -314,10 +319,8 @@ function ConstructModEntry(modJson) {
 		downloadLink: downloadLink,
 		source: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/`,
 		cover: cover,
-		author: {
-			name: modJson.author,
-			icon: authorIcon
-		}
+		authors: authors.split(", "),
+		authorIcon: authorIcon
 	}
 
 	return modEntry;
