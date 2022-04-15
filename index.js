@@ -31,7 +31,6 @@ async function Main() {
 		const modJson = JSON.parse(fs.readFileSync(modJsonPath));
 
 		core.info("POFOIFHOIEWJFIOEWHOIF WORK!!!!");
-		core.info("Getting Current User");
 
 		currentUser = (await octokit.rest.users.getByUsername({
 			username: github.context.repo.owner
