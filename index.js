@@ -30,6 +30,7 @@ async function Main() {
 
 		const modJson = JSON.parse(fs.readFileSync(modJsonPath));
 
+		core.info("POFOIFHOIEWJFIOEWHOIF WORK!!!!");
 		core.info("Getting Current User");
 
 		currentUser = (await octokit.rest.users.getByUsername({
@@ -283,6 +284,7 @@ async function FetchUpstream(repo, upstreamRepo, branch, upstreamBranch) {
 
 function ConstructModEntry(modJson) {
 	var cover = core.getInput('cover');
+	var authors = core.getInput('authors');
 	var authorIcon = core.getInput('author-icon');
 	var downloadLink = core.getInput('qmod-url');
 
@@ -297,6 +299,10 @@ function ConstructModEntry(modJson) {
 		}
 	}
 
+	if (authors == '') {
+		authors = modJson.author;
+	}
+
 	if (authorIcon == '') {
 		authorIcon = currentUser.avatar_url;
 	}
@@ -306,6 +312,8 @@ function ConstructModEntry(modJson) {
 		downloadLink = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/download/${core.getInput('tag')}/${core.getInput('qmod-name')}`;
 	}
 
+	core.info(authors.split(", "));
+
 	const modEntry = {
 		name: modJson.name,
 		description: modJson.description,
@@ -314,10 +322,8 @@ function ConstructModEntry(modJson) {
 		downloadLink: downloadLink,
 		source: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/`,
 		cover: cover,
-		author: {
-			name: modJson.author,
-			icon: authorIcon
-		}
+		authors: authors.split(", "),
+		authorIcon: authorIcon
 	}
 
 	return modEntry;

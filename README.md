@@ -18,6 +18,8 @@ This is your GitHub token. This should always be `${{ secrets.GITHUB_TOKEN }}`
 
 `cover`: A URL to the cover of the mod. If left blank, the action will check your repo for a `cover.png` in the root. If one isn't found, the cover will be left blank
 
+`authors`: A comma (and space) seperated list of authors. If left blank, the `author` param from the `mod.json` will be used
+
 `author-icon`: A URL to the author's icon. If left blank, the icon will default to the repo's owner's pfp
 
 `note`: A custom note to add to the PR message. This can be left blank
@@ -103,6 +105,10 @@ on:
         description: 'Cover URL'
         required: false 
         type: string
+      authors:
+        description: "List of authors"
+        required: false 
+        type: string
       author-icon:
         description: "Author's PFP URL"
         required: false 
@@ -116,6 +122,13 @@ jobs:
   publish-to-repo:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        name: Checkout
+        with:
+          submodules: true
+          lfs: true
+        
       - name: Upload QMod to Mod Repo
         uses: BobbyShmurner/mod-uploader@v1.0
         with:
