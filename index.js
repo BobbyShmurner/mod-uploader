@@ -311,6 +311,8 @@ function ConstructModEntry(modJson) {
 		downloadLink = `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/releases/download/${core.getInput('tag')}/${core.getInput('qmod-name')}`;
 	}
 
+	core.info(authors.split(", "));
+
 	const modEntry = {
 		name: modJson.name,
 		description: modJson.description,
