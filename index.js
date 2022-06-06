@@ -30,8 +30,6 @@ async function Main() {
 
 		const modJson = JSON.parse(fs.readFileSync(modJsonPath));
 
-		core.info("POFOIFHOIEWJFIOEWHOIF WORK!!!!");
-
 		currentUser = (await octokit.rest.users.getByUsername({
 			username: github.context.repo.owner
 		})).data;
@@ -321,8 +319,8 @@ function ConstructModEntry(modJson) {
 		downloadLink: downloadLink,
 		source: `https://github.com/${github.context.repo.owner}/${github.context.repo.repo}/`,
 		cover: cover,
-		authors: authors.split(", "),
-		authorIcon: authorIcon
+		authorIcon: authorIcon,
+		authors: authors.split(", ")
 	}
 
 	return modEntry;
