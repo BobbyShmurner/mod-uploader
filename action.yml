@@ -13,7 +13,6 @@ inputs:
   mod-json:
     description: 'Path to the mod.json'
     default: 'mod.json'
-    required: true
   cover:
     description: "URL to the cover of the mod. By default the URL to 'cover.png' will be used"
   authors:
