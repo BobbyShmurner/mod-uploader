@@ -105,16 +105,16 @@ async function Main() {
 		core.info("Adding mod entry to mod repo");
 
 		if (!repoMods.hasOwnProperty(modJson.packageVersion)) {
-			if (semver.valid(modJson.packageVersion)) {
-				repoMods[modJson.packageVersion] = [];
+			// if (semver.valid(modJson.packageVersion)) {
+			repoMods[modJson.packageVersion] = [];
 
-				const msg = `There were no mods found for the version ${modJson.packageVersion}, so a new verion entry was created`;
+			const msg = `There were no mods found for the version ${modJson.packageVersion}, so a new verion entry was created`;
 
-				core.warning(msg);
-				notes.push(msg);
-			} else {
-				throw `Version ${modJson.packageVersion} is invalid!`;
-			}
+			core.warning(msg);
+			notes.push(msg);
+			// } else {
+			// 	throw `Version ${modJson.packageVersion} is invalid!`;
+			// }
 		}
 
 		var isNewEntry = true;
