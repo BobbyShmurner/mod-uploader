@@ -1,0 +1,24 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+      name: 'Checkout'
+
+    - uses: tool3/ncc@master
+      name: 'NCC Build'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        src: 'index.js'
+        branch: 'main'
+        ncc_args: '--license, licenses.txt'

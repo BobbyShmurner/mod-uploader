@@ -61,7 +61,7 @@ So now that we've set up the repo for use with the action, it's about time we st
 1. Add the following code block to the end of your publish workflow:
     ```yml
     - name: Upload QMod to Mod Repo
-      uses: BobbyShmurner/mod-uploader@v1.0
+      uses: BobbyShmurner/mod-uploader@v1.1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         repo-token: ${{ secrets.REPO_TOKEN }}
@@ -130,7 +130,7 @@ jobs:
           lfs: true
         
       - name: Upload QMod to Mod Repo
-        uses: BobbyShmurner/mod-uploader@v1.0
+        uses: BobbyShmurner/mod-uploader@v1.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repo-token: ${{ secrets.REPO_TOKEN }}
