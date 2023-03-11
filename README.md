@@ -18,7 +18,7 @@ This is your GitHub token. This should always be `${{ secrets.GITHUB_TOKEN }}`
 
 `cover`: A URL to the cover of the mod. If left blank, the action will check your repo for a `cover.png` in the root. If one isn't found, the cover will be left blank
 
-`authors`: A comma (and space) seperated list of authors. If left blank, the `author` param from the `mod.json` will be used
+`authors`: A comma (and space: `, `) seperated list of authors. If left blank, the `author` param from the `mod.json` will be used
 
 `author-icon`: A URL to the author's icon. If left blank, the icon will default to the repo's owner's pfp
 
@@ -136,6 +136,7 @@ jobs:
           repo-token: ${{ secrets.REPO_TOKEN }}
           qmod-url: ${{ github.event.inputs.qmod-url }}
           cover: ${{ github.event.inputs.cover }}
+          authors: ${{ github.event.inputs.authors }}
           author-icon: ${{ github.event.inputs.author-icon }}
           note: ${{ github.event.inputs.note }}
 ```
